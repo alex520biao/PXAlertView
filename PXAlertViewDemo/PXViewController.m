@@ -10,7 +10,7 @@
 #import "PXAlertView+Customization.h"
 
 @interface PXViewController ()
-
+@property(nonatomic,weak)PXAlertView *alertView;
 @end
 
 @implementation PXViewController
@@ -130,6 +130,35 @@
                          }];
 }
 
+//完全自定义弹框
+- (IBAction)showAlertViewWithCustomView:(id)sender{
+    //alertView的contentView最大宽度为270
+    UIView *customView=[[UIView alloc] initWithFrame:CGRectMake(0, 0, 270, 200)];
+    
+    UILabel *lab=[[UILabel alloc] initWithFrame:CGRectMake(0, 50, 200, 50)];
+    lab.text=@"我是customView";
+    lab.textColor=[UIColor whiteColor];
+    lab.textAlignment=NSTextAlignmentCenter;
+    lab.lineBreakMode=UILineBreakModeTailTruncation;
+    lab.numberOfLines=1;
+    lab.center=CGPointMake(CGRectGetMidX(customView.frame), lab.center.y);
+    [customView addSubview:lab];
+    
+    UIButton *checkButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    checkButton.frame = CGRectMake(0, 150, 200, 50);
+    [checkButton setTitle:@"自定义关闭" forState:UIControlStateNormal];
+    [checkButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [checkButton addTarget:self action:@selector(checkAction:) forControlEvents:UIControlEventTouchUpInside];
+    checkButton.backgroundColor = [UIColor clearColor];
+    checkButton.center=CGPointMake(CGRectGetMidX(customView.frame), checkButton.center.y);
+    [customView addSubview:checkButton];
+    
+    PXAlertView *alertView=[PXAlertView showAlertWithCustomAlertView:customView];
+    self.alertView=alertView;//保持当前自定义PXAlertView引用,可以使用代码代码关闭alertView
+    
+    customView.backgroundColor=[UIColor blueColor];
+}
+
 - (IBAction)show5StackedAlertViews:(id)sender
 {
     for (int i = 1; i <= 5; i++) {
@@ -173,6 +202,12 @@
                      cancelButtonTitle:@"Cancel"
                      otherButtonTitles:@"Ok", nil];
     [alertView show];
+}
+
+//关闭当前alertView
+-(IBAction)checkAction:(id)sender{
+    //点击其他按钮关闭alertView
+    [self.alertView  dismissWithAnimated:YES];
 }
 
 @end

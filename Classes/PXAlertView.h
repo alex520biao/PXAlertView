@@ -60,6 +60,9 @@ typedef void(^PXAlertViewCompletionBlock)(BOOL cancelled, NSInteger buttonIndex)
                        contentView:(UIView *)view
                         completion:(PXAlertViewCompletionBlock)completion;
 
+#pragma mark- 完全自定义alertView
++ (PXAlertView *)showAlertWithCustomAlertView:(UIView*)customAlertView;
+
 /**
  * Adds a button to the receiver with the given title.
  * @param title The title of the new button
@@ -71,6 +74,12 @@ typedef void(^PXAlertViewCompletionBlock)(BOOL cancelled, NSInteger buttonIndex)
  * Dismisses the receiver, optionally with animation.
  */
 - (void)dismissWithClickedButtonIndex:(NSInteger)buttonIndex animated:(BOOL)animated;
+
+/**
+ *  隐藏PXAlertView，默认PXAlertViewCompletionBlock中cancelled=YES
+ */
+- (void)dismissWithAnimated:(BOOL)animated;
+
 
 /**
  * By default the alert allows you to tap anywhere around the alert to dismiss it.

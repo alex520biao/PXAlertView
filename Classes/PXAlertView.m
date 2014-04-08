@@ -190,6 +190,76 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
     }
     return self;
 }
+
+//customAlertView
+- (id)initWithCustomView:(UIView*)customView{
+//    self = [super init];
+//    if (self) {
+//        _mainWindow = [self windowWithLevel:UIWindowLevelNormal];
+//        _alertWindow = [self windowWithLevel:UIWindowLevelAlert];
+//        if (!_alertWindow) {
+//            _alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//            _alertWindow.windowLevel = UIWindowLevelAlert;
+//        }
+//        self.view.frame = _alertWindow.bounds;
+//        
+//        _backgroundView = [[UIView alloc] initWithFrame:_alertWindow.bounds];
+//        _backgroundView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.25];
+//        _backgroundView.alpha = 0;
+//        [self.view addSubview:_backgroundView];
+//        
+//        _alertView = customView;
+//        _alertView.backgroundColor = [UIColor colorWithWhite:0.25 alpha:1];
+//        _alertView.layer.cornerRadius = 8.0;
+//        _alertView.layer.opacity = .95;
+//        _alertView.clipsToBounds = YES;
+//        [self.view addSubview:_alertView];
+//        
+//        _alertView.bounds = CGRectMake(0, 0, AlertViewWidth, _alertView.frame.size.height);
+//        [self setupGestures];
+//        
+//        _alertView.center = CGPointMake(CGRectGetMidX(_alertWindow.bounds), CGRectGetMidY(_alertWindow.bounds));
+//    }
+//    return self;
+    
+    self = [super init];
+    if (self) {
+        _mainWindow = [self windowWithLevel:UIWindowLevelNormal];
+        _alertWindow = [self windowWithLevel:UIWindowLevelAlert];
+        
+        if (!_alertWindow) {
+            _alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+            _alertWindow.windowLevel = UIWindowLevelAlert;
+            _alertWindow.backgroundColor = [UIColor clearColor];
+        }
+        _alertWindow.userInteractionEnabled = YES;
+        _alertWindow.rootViewController = self;
+        
+        CGRect frame = [self frameForOrientation:self.interfaceOrientation];
+        self.view.frame = frame;
+        
+        _backgroundView = [[UIView alloc] initWithFrame:frame];
+        _backgroundView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.25];
+        _backgroundView.alpha = 0;
+        [self.view addSubview:_backgroundView];
+        
+        _alertView = customView;
+        _alertView.backgroundColor = [UIColor colorWithWhite:0.25 alpha:1];
+        _alertView.layer.cornerRadius = 8.0;
+        _alertView.layer.opacity = .95;
+        _alertView.clipsToBounds = YES;
+        [self.view addSubview:_alertView];
+        
+        _alertView.bounds = CGRectMake(0, 0, AlertViewWidth, _alertView.frame.size.height);
+        _alertView.center = [self centerWithFrame:frame];
+        BOOL isTapEnable=NO;
+        if (isTapEnable) {
+            [self setupGestures];
+        }
+    }
+    return self;
+}
+
 - (CGRect)frameForOrientation:(UIInterfaceOrientation)orientation
 {
     CGRect frame;
@@ -552,6 +622,14 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
     return alertView;
 }
 
+//完全自定义alertView
++ (PXAlertView *)showAlertWithCustomAlertView:(UIView*)customAlertView{
+    PXAlertView *alertView = [[PXAlertView alloc] initWithCustomView:customAlertView];
+    [alertView show];
+    return alertView;
+}
+
+
 - (NSInteger)addButtonWithTitle:(NSString *)title
 {
     UIButton *button = [self genericButton];
@@ -590,6 +668,14 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
     [self.alertView addSubview:button];
     self.buttons = (self.buttons) ? [self.buttons arrayByAddingObject:button] : @[ button ];
     return [self.buttons count] - 1;
+}
+
+/**
+ *  隐藏PXAlertView，默认PXAlertViewCompletionBlock中cancelled=YES
+ */
+- (void)dismissWithAnimated:(BOOL)animated{
+    //默认设置为点击背景关闭alertView
+    [self dismiss:self.tap animated:animated];
 }
 
 - (void)dismissWithClickedButtonIndex:(NSInteger)buttonIndex animated:(BOOL)animated
