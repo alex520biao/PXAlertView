@@ -103,7 +103,8 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
         [self.view addSubview:_backgroundView];
         
         _alertView = [[UIView alloc] init];
-        _alertView.backgroundColor = [UIColor colorWithWhite:0.25 alpha:1];
+//        _alertView.backgroundColor = [UIColor colorWithWhite:0.25 alpha:1];
+        _alertView.backgroundColor = [UIColor whiteColor];
         _alertView.layer.cornerRadius = 8.0;
         _alertView.layer.opacity = .95;
         _alertView.clipsToBounds = YES;
@@ -116,7 +117,7 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
                                                                 44)];
         _titleLabel.text = title;
         _titleLabel.backgroundColor = [UIColor clearColor];
-        _titleLabel.textColor = [UIColor whiteColor];
+        _titleLabel.textColor = [UIColor blackColor];
         _titleLabel.textAlignment = NSTextAlignmentCenter;
         _titleLabel.font = [UIFont boldSystemFontOfSize:17];
         _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -145,7 +146,7 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
                                                                   44)];
         _messageLabel.text = message;
         _messageLabel.backgroundColor = [UIColor clearColor];
-        _messageLabel.textColor = [UIColor whiteColor];
+        _messageLabel.textColor = [UIColor blackColor];
         _messageLabel.textAlignment = NSTextAlignmentCenter;
         _messageLabel.font = [UIFont systemFontOfSize:15];
         _messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -303,8 +304,10 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.backgroundColor = [UIColor clearColor];
     button.titleLabel.font = [UIFont systemFontOfSize:17];
-    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [button setTitleColor:[UIColor colorWithWhite:0.25 alpha:1] forState:UIControlStateHighlighted];
+//    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//    [button setTitleColor:[UIColor colorWithWhite:0.25 alpha:1] forState:UIControlStateHighlighted];
+    [button setTitleColor:[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1] forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1] forState:UIControlStateHighlighted];
     [button addTarget:self action:@selector(dismiss:) forControlEvents:UIControlEventTouchUpInside];
     [button addTarget:self action:@selector(setBackgroundColorForButton:) forControlEvents:UIControlEventTouchDown];
     [button addTarget:self action:@selector(clearBackgroundColorForButton:) forControlEvents:UIControlEventTouchDragExit];
@@ -356,7 +359,9 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
 
 - (void)setBackgroundColorForButton:(id)sender
 {
-    [sender setBackgroundColor:[UIColor colorWithRed:94/255.0 green:196/255.0 blue:221/255.0 alpha:1.0]];
+//    [sender setBackgroundColor:[UIColor colorWithRed:94/255.0 green:196/255.0 blue:221/255.0 alpha:1.0]];
+    //浅灰色
+    [sender setBackgroundColor:[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.1]];
 }
 
 - (void)clearBackgroundColorForButton:(id)sender
@@ -484,7 +489,9 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
 - (CALayer *)lineLayer
 {
     CALayer *lineLayer = [CALayer layer];
-    lineLayer.backgroundColor = [[UIColor colorWithWhite:0.90 alpha:0.3] CGColor];
+    //    lineLayer.backgroundColor = [[UIColor colorWithWhite:0.90 alpha:0.3] CGColor];
+    //浅灰色
+    lineLayer.backgroundColor = [[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.3] CGColor];
     return lineLayer;
 }
 
@@ -634,11 +641,11 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
 {
     UIButton *button = [self genericButton];
     [button setTitle:title forState:UIControlStateNormal];
-    button.titleLabel.font = [UIFont boldSystemFontOfSize:17];
     
     if (!self.cancelButton) {
         self.cancelButton = button;
         self.cancelButton.frame = CGRectMake(0, self.buttonsY, AlertViewWidth, AlertViewButtonHeight);
+        self.cancelButton.titleLabel.font = [UIFont boldSystemFontOfSize:17];
     } else if (self.buttons && [self.buttons count] > 1) {
         UIButton *lastButton = (UIButton *)[self.buttons lastObject];
         lastButton.titleLabel.font = [UIFont systemFontOfSize:17];
@@ -662,7 +669,6 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
         button.frame = CGRectMake(AlertViewWidth/2, self.buttonsY, AlertViewWidth/2, AlertViewButtonHeight);
         self.otherButton = button;
         self.cancelButton.frame = CGRectMake(0, self.buttonsY, AlertViewWidth/2, AlertViewButtonHeight);
-        self.cancelButton.titleLabel.font = [UIFont systemFontOfSize:17];
     }
     
     [self.alertView addSubview:button];
