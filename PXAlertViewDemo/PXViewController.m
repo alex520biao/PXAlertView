@@ -53,28 +53,50 @@
 
 - (IBAction)showSimpleCustomizedAlertView:(id)sender
 {
-    PXAlertView *alert = [PXAlertView showAlertWithTitle:@"Hello World"
-                                                 message:@"Oh my this looks like a nice message."
-                                             cancelTitle:@"Cancel"
-                                             otherTitles:@[ @"Too Hot", @"Luke Warm", @"Quite nippy" ]
-                                              completion:^(BOOL cancelled, NSInteger buttonIndex) {
-                                                  if (cancelled) {
-                                                      NSLog(@"Simple Customised Alert View cancelled");
-                                                  } else {
-                                                      NSLog(@"Simple Customised Alert View dismissed, but not cancelled");
-                                                  }
-                                              }];
-    [alert setWindowTintColor:[UIColor colorWithRed:94/255.0 green:196/255.0 blue:221/255.0 alpha:0.25]];
-    [alert setBackgroundColor:[UIColor colorWithRed:255/255.0 green:206/255.0 blue:13/255.0 alpha:1.0]];
+//    PXAlertView *alert = [PXAlertView showAlertWithTitle:@"Hello World"
+//                                                 message:@"Oh my this looks like a nice message."
+//                                             cancelTitle:@"Cancel"
+//                                             otherTitles:@[ @"Too Hot", @"Luke Warm", @"Quite nippy" ]
+//                                              completion:^(BOOL cancelled, NSInteger buttonIndex) {
+//                                                  if (cancelled) {
+//                                                      NSLog(@"Simple Customised Alert View cancelled");
+//                                                  } else {
+//                                                      NSLog(@"Simple Customised Alert View dismissed, but not cancelled");
+//                                                  }
+//                                              }];
+//    [alert setWindowTintColor:[UIColor colorWithRed:94/255.0 green:196/255.0 blue:221/255.0 alpha:0.25]];
+//    [alert setBackgroundColor:[UIColor colorWithRed:255/255.0 green:206/255.0 blue:13/255.0 alpha:1.0]];
+//    
+//    [alert setTitleFont:[UIFont fontWithName:@"Zapfino" size:15.0f]];
+//    [alert setTitleColor:[UIColor darkGrayColor]];
+//    
+//    [alert setMessageColor:[UIColor cyanColor]];
+//    [alert setMessageFont:[UIFont systemFontOfSize:14.0]];
+//    
+//    [alert setCancelButtonBackgroundColor:[UIColor redColor]];
+//    [alert setOtherButtonBackgroundColor:[UIColor blueColor]];
     
-    [alert setTitleFont:[UIFont fontWithName:@"Zapfino" size:15.0f]];
-    [alert setTitleColor:[UIColor darkGrayColor]];
-    
-    [alert setMessageColor:[UIColor cyanColor]];
-    [alert setMessageFont:[UIFont systemFontOfSize:14.0]];
-    
-    [alert setCancelButtonBackgroundColor:[UIColor redColor]];
-    [alert setOtherButtonBackgroundColor:[UIColor blueColor]];
+    //customization自定义alertView样式
+    [PXAlertView showAlertWithTitle:@"I'm title"
+                            message:@"I'm message"
+                      customization:^PXAlertViewStyleOption *(PXAlertView *alertView,PXAlertViewStyleOption *styleOption) {
+                          //返回的styleOption为默认样式
+                          styleOption.windowTintColor=[UIColor colorWithRed:94/255.0 green:196/255.0 blue:221/255.0 alpha:0.25];
+                          styleOption.backgroundColor=[UIColor colorWithRed:255/255.0 green:206/255.0 blue:13/255.0 alpha:1.0];
+                          
+                          styleOption.titleFont=[UIFont fontWithName:@"Zapfino" size:15.0f];
+                          styleOption.titleColor=[UIColor darkGrayColor];
+                          
+                          styleOption.messageColor=[UIColor cyanColor];
+                          styleOption.messageFont=[UIFont systemFontOfSize:14.0];
+                          
+                          styleOption.cancelButtonBackgroundColor=[UIColor redColor];
+                          styleOption.otherButtonBackgroundColor=[UIColor blueColor];
+                          return styleOption;
+                      } completion:^(BOOL cancelled, NSInteger buttonIndex) {
+                          
+                      } cancelTitle:@"Cancel"
+                        otherTitles:@"Other1",@"Other2",@"Other3",nil];
 }
 
 

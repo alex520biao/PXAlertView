@@ -7,6 +7,10 @@
 //
 
 #import "PXAlertView.h"
+#import "PXAlertViewStyleOption.h"
+
+@class PXAlertViewStyleOption;
+typedef PXAlertViewStyleOption *(^CustomizationBlock)(PXAlertView *alertView,PXAlertViewStyleOption *styleOption);
 
 @interface PXAlertView (Customization)
 
@@ -21,5 +25,22 @@
 
 - (void)setCancelButtonBackgroundColor:(UIColor *)color;
 - (void)setOtherButtonBackgroundColor:(UIColor *)color;
+
+/**
+ * 设置PXAlertViewStyle样式
+ */
+//-(void)setAlertViewStyle:(PXAlertViewStyle)alertViewStyle customization:(CustomizationBlock)customizationBlock;
+
+/**
+ *  自定义样式的alertView
+ *
+ */
++ (id)showAlertWithTitle:(NSString *)title
+                 message:(NSString *)message
+           customization:(CustomizationBlock)customization
+              completion:(PXAlertViewCompletionBlock)completion
+             cancelTitle:(NSString *)cancelTitle
+             otherTitles:(NSString *)otherTitles, ... NS_REQUIRES_NIL_TERMINATION;
+
 
 @end
