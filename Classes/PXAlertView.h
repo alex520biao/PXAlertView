@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "PXAlertViewStyleOption.h"
+@class PXAlertView;
+@class PXAlertViewStyleOption;
+typedef PXAlertViewStyleOption *(^CustomizationBlock)(PXAlertView *alertView,PXAlertViewStyleOption *styleOption);
 typedef void(^PXAlertViewCompletionBlock)(BOOL cancelled, NSInteger buttonIndex);
 
 @interface PXAlertView : UIViewController
@@ -50,6 +53,19 @@ typedef void(^PXAlertViewCompletionBlock)(BOOL cancelled, NSInteger buttonIndex)
                         otherTitle:(NSString *)otherTitle
                        contentView:(UIView *)view
                         completion:(PXAlertViewCompletionBlock)completion;
+
+/**
+ *  自定义样式的alertView
+ *
+ */
++ (instancetype)showAlertWithTitle:(NSString *)title
+                           message:(NSString *)message
+                       contentView:(UIView*)contentView
+                     customization:(CustomizationBlock)customization
+                        completion:(PXAlertViewCompletionBlock)completion
+                       cancelTitle:(NSString *)cancelTitle
+                       otherTitles:(NSString *)otherTitles, ... NS_REQUIRES_NIL_TERMINATION;
+
 /**
  * @param otherTitles Must be a NSArray containing type NSString, or set to nil for no otherTitles.
  */
@@ -62,6 +78,11 @@ typedef void(^PXAlertViewCompletionBlock)(BOOL cancelled, NSInteger buttonIndex)
 
 #pragma mark- 完全自定义alertView
 + (PXAlertView *)showAlertWithCustomAlertView:(UIView*)customAlertView;
+
+/**
+ * 设置PXAlertViewStyle可选样式样式
+ */
+-(void)setAlertViewStyle:(PXAlertViewStyle)alertViewStyle;
 
 /**
  * Adds a button to the receiver with the given title.

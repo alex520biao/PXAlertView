@@ -7,7 +7,6 @@
 //
 
 #import "PXViewController.h"
-#import "PXAlertView+Customization.h"
 
 @interface PXViewController ()
 @property(nonatomic,weak)PXAlertView *alertView;
@@ -78,11 +77,17 @@
     
     //customization自定义alertView样式
     [PXAlertView showAlertWithTitle:@"I'm title"
-                            message:@"I'm message"
+                            message:@"I'm message。alertView背景、各个按钮、contentView、title、message等均可自定义。"
+                        contentView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ExampleImage.png"]]
                       customization:^PXAlertViewStyleOption *(PXAlertView *alertView,PXAlertViewStyleOption *styleOption) {
                           //返回的styleOption为默认样式
                           styleOption.windowTintColor=[UIColor colorWithRed:94/255.0 green:196/255.0 blue:221/255.0 alpha:0.25];
-                          styleOption.backgroundColor=[UIColor colorWithRed:255/255.0 green:206/255.0 blue:13/255.0 alpha:1.0];
+                          styleOption.alertViewBgColor=[UIColor colorWithRed:255/255.0 green:206/255.0 blue:13/255.0 alpha:1.0];
+                          
+                          //UIImageView.contentMode使用默认设置即可
+                          UIImage *foucesImg=[UIImage imageNamed:@"s_5.png"];//必须同时有单倍/双倍图片
+                          foucesImg = [foucesImg resizableImageWithCapInsets:UIEdgeInsetsMake((foucesImg.size.height)/2.0f,(foucesImg.size.width)/2.0f, (foucesImg.size.height)/2.0f, (foucesImg.size.width)/2.0f)];
+                          styleOption.alertViewBgimage=foucesImg;
                           
                           styleOption.titleFont=[UIFont fontWithName:@"Zapfino" size:15.0f];
                           styleOption.titleColor=[UIColor darkGrayColor];
@@ -92,6 +97,8 @@
                           
                           styleOption.cancelButtonBackgroundColor=[UIColor redColor];
                           styleOption.otherButtonBackgroundColor=[UIColor blueColor];
+                          
+                          styleOption.lineColor=[UIColor blueColor];
                           return styleOption;
                       } completion:^(BOOL cancelled, NSInteger buttonIndex) {
                           
@@ -102,9 +109,13 @@
 
 - (IBAction)showLargeAlertView:(id)sender
 {
-    [PXAlertView showAlertWithTitle:@"Why this is a larger title! Even larger than the largest large thing that ever was large in a very large way."
+    UIImageView *contentView=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ExampleImage.png"]];
+//    contentView.frame=CGRectMake(0, 0, 300, 300);
+    PXAlertView *alertView=[PXAlertView showAlertWithTitle:@"Why this is a larger title! Even larger than the largest large thing that ever was large in a very large way."
                             message:@"Oh my this looks like a nice message. Yes it does, and it can span multiple lines... all the way down."
                         cancelTitle:@"Ok thanks, that's grand"
+                        otherTitle:@"1234"
+                        contentView:contentView
                          completion:^(BOOL cancelled, NSInteger buttonIndex) {
                              if (cancelled) {
                                  NSLog(@"Larger Alert View cancelled");
@@ -112,11 +123,13 @@
                                  NSLog(@"Larger Alert View dismissed, but not cancelled");
                              }
                          }];
+    //黑色风格
+    [alertView setAlertViewStyle:PXAlertViewStyleBlack];
 }
 
 - (IBAction)showTwoButtonAlertView:(id)sender
 {
-    PXAlertView *alert = [PXAlertView showAlertWithTitle:@"The Matrix"
+    PXAlertView *alertView = [PXAlertView showAlertWithTitle:@"The Matrix"
                             message:@"Pick the Red pill, or the blue pill"
                         cancelTitle:@"Cancel"
                          otherTitle:@"Other"
@@ -127,9 +140,6 @@
                                  NSLog(@"Other (Red) button pressed");
                              }
                          }];
-    
-    [alert setCancelButtonBackgroundColor:[UIColor blueColor]];
-    [alert setOtherButtonBackgroundColor:[UIColor redColor]];
 }
 
 - (IBAction)showMultiButtonAlertView:(id)sender
@@ -155,6 +165,7 @@
                          otherTitle:nil
                         contentView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ExampleImage.png"]]
                          completion:^(BOOL cancelled, NSInteger buttonIndex) {
+                            
                          }];
 }
 
@@ -167,12 +178,13 @@
     lab.text=@"我是customView";
     lab.textColor=[UIColor whiteColor];
     lab.textAlignment=NSTextAlignmentCenter;
-    lab.lineBreakMode=UILineBreakModeTailTruncation;
+    lab.lineBreakMode=NSLineBreakByTruncatingTail;
     lab.numberOfLines=1;
     lab.center=CGPointMake(CGRectGetMidX(customView.frame), lab.center.y);
+    lab.backgroundColor=[UIColor clearColor];
     [customView addSubview:lab];
     
-    UIButton *checkButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    UIButton *checkButton = [UIButton buttonWithType:UIButtonTypeCustom];
     checkButton.frame = CGRectMake(0, 150, 200, 50);
     [checkButton setTitle:@"自定义关闭" forState:UIControlStateNormal];
     [checkButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -201,7 +213,7 @@
 {
     PXAlertView *alertView = [PXAlertView showAlertWithTitle:@"Tap"
                                                      message:@"Try tapping around the alert view to dismiss it. This should NOT work on this alert."];
-    [alertView setTapToDismissEnabled:NO];
+    [alertView setTapToDismissEnabled:YES];
 }
 
 - (IBAction)dismissWithNoAnimationAfter1Second:(id)sender
@@ -228,7 +240,7 @@
                                message:@"How long does the standard UIAlertView stretch to? This should give a good estimation"
                               delegate:self
                      cancelButtonTitle:@"Cancel"
-                     otherButtonTitles:@"Ok", nil];
+                     otherButtonTitles:@"Ok",@"ASD", nil];
     [alertView show];
 }
 
