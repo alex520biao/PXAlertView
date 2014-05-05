@@ -8,7 +8,7 @@
 
 #import "PXViewController.h"
 
-@interface PXViewController ()
+@interface PXViewController ()<UIAlertViewDelegate>
 @property(nonatomic,weak)PXAlertView *alertView;
 @end
 
@@ -50,31 +50,7 @@
                          }];
 }
 
-- (IBAction)showSimpleCustomizedAlertView:(id)sender
-{
-//    PXAlertView *alert = [PXAlertView showAlertWithTitle:@"Hello World"
-//                                                 message:@"Oh my this looks like a nice message."
-//                                             cancelTitle:@"Cancel"
-//                                             otherTitles:@[ @"Too Hot", @"Luke Warm", @"Quite nippy" ]
-//                                              completion:^(BOOL cancelled, NSInteger buttonIndex) {
-//                                                  if (cancelled) {
-//                                                      NSLog(@"Simple Customised Alert View cancelled");
-//                                                  } else {
-//                                                      NSLog(@"Simple Customised Alert View dismissed, but not cancelled");
-//                                                  }
-//                                              }];
-//    [alert setWindowTintColor:[UIColor colorWithRed:94/255.0 green:196/255.0 blue:221/255.0 alpha:0.25]];
-//    [alert setBackgroundColor:[UIColor colorWithRed:255/255.0 green:206/255.0 blue:13/255.0 alpha:1.0]];
-//    
-//    [alert setTitleFont:[UIFont fontWithName:@"Zapfino" size:15.0f]];
-//    [alert setTitleColor:[UIColor darkGrayColor]];
-//    
-//    [alert setMessageColor:[UIColor cyanColor]];
-//    [alert setMessageFont:[UIFont systemFontOfSize:14.0]];
-//    
-//    [alert setCancelButtonBackgroundColor:[UIColor redColor]];
-//    [alert setOtherButtonBackgroundColor:[UIColor blueColor]];
-    
+- (IBAction)showSimpleCustomizedAlertView:(id)sender{
     //customization自定义alertView样式
     [PXAlertView showAlertWithTitle:@"I'm title"
                             message:@"I'm message。alertView背景、各个按钮、contentView、title、message等均可自定义。"
@@ -146,7 +122,7 @@
 {
     [PXAlertView showAlertWithTitle:@"Porridge"
                             message:@"How would you like it?"
-                        cancelTitle:@"No thanks"
+                        cancelTitle:nil
                         otherTitles:@[ @"Too Hot", @"Luke Warm", @"Quite nippy" ]
                          completion:^(BOOL cancelled, NSInteger buttonIndex) {
                              if (cancelled) {
@@ -161,11 +137,11 @@
 {
     [PXAlertView showAlertWithTitle:@"A picture should appear below"
                             message:@"Yay, it works!"
-                        cancelTitle:@"Ok"
-                         otherTitle:nil
+                        cancelTitle:@"Cancel"
+                         otherTitles:@[ @"Too Hot", @"Luke Warm", @"Quite nippy" ]
                         contentView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ExampleImage.png"]]
                          completion:^(BOOL cancelled, NSInteger buttonIndex) {
-                            
+                             NSLog(@"%d",buttonIndex);
                          }];
 }
 
@@ -240,7 +216,7 @@
                                message:@"How long does the standard UIAlertView stretch to? This should give a good estimation"
                               delegate:self
                      cancelButtonTitle:@"Cancel"
-                     otherButtonTitles:@"Ok",@"ASD", nil];
+                     otherButtonTitles:@"Too Hot", @"Luke Warm", @"Quite nippy", nil];
     [alertView show];
 }
 
@@ -249,5 +225,18 @@
     //点击其他按钮关闭alertView
     [self.alertView  dismissWithAnimated:YES];
 }
+
+#pragma mark-UIAlertViewDelegate
+// Called when a button is clicked. The view will be automatically dismissed after this call returns
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    NSLog(@"clickButtonAtIndex:%d",buttonIndex);
+}
+
+// Called when we cancel a view (eg. the user clicks the Home button). This is not called when the user clicks the cancel button.
+// If not defined in the delegate, we simulate a click in the cancel button
+- (void)alertViewCancel:(UIAlertView *)alertView{
+    NSLog(@"alertViewCancel");
+}
+
 
 @end

@@ -44,7 +44,7 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
 @property (nonatomic, copy) void (^completion)(BOOL cancelled, NSInteger buttonIndex);
 
 //存放所有分割线(横向、纵向)
-@property (nonatomic,strong)NSMutableSet *lineLayerSet;
+@property (nonatomic,strong)NSMutableArray *lineLayerArray;
 
 
 @property (nonatomic,strong)PXAlertViewStyleOption *styleOption;
@@ -91,7 +91,7 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
 {
     self = [super init];
     if (self) {
-        _lineLayerSet=[NSMutableSet set];
+        _lineLayerArray=[NSMutableArray array];
         
         _mainWindow = [self windowWithLevel:UIWindowLevelNormal];
         _alertWindow = [self windowWithLevel:UIWindowLevelAlert];
@@ -112,7 +112,7 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
         _backgroundView.alpha = 0;
         [self.view addSubview:_backgroundView];
         
-        _alertView = [[UIView alloc] init];
+        _alertView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, AlertViewWidth, 150)];
 //        _alertView.backgroundColor = [UIColor colorWithWhite:0.25 alpha:1];
         _alertView.backgroundColor = [UIColor whiteColor];
         _alertView.layer.cornerRadius = 8.0;
@@ -169,39 +169,19 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
         _messageLabel.frame = [self adjustLabelFrameHeight:self.messageLabel];
         [_alertView addSubview:_messageLabel];
         
-        // Line
-        CALayer *lineLayer = [self lineLayer];
-        lineLayer.frame = CGRectMake(0, _messageLabel.frame.origin.y + _messageLabel.frame.size.height + AlertViewVerticalElementSpace, AlertViewWidth, AlertViewLineLayerWidth);
-        [_alertView.layer addSublayer:lineLayer];
-        [_lineLayerSet addObject:lineLayer];
+        //初始化分割线及按钮
+        [self initLineAndBtns:cancelTitle otherTitles:otherTitles];
+                
+        //alertView子视图布局
+        [self layoutSubviews_alertView];
         
-        _buttonsY = lineLayer.frame.origin.y + lineLayer.frame.size.height;
-        
-        // cancelButton
-        if (cancelTitle) {
-            [self addButtonWithTitle:cancelTitle];
-        } else {
-            [self addButtonWithTitle:NSLocalizedString(@"Ok", nil)];
-        }
-        
-        if (otherTitles && [otherTitles count] > 0) {
-            for (id otherTitle in otherTitles) {
-                NSParameterAssert([otherTitle isKindOfClass:[NSString class]]);
-                [self addButtonWithTitle:(NSString *)otherTitle];
-            }
-        }
-        
-        _alertView.bounds = CGRectMake(0, 0, AlertViewWidth, 150);
-        _alertBgImageView.frame=_alertView.bounds;
+        //self.view子视图布局
+        [self layoutSubviews_selfView];
         
         if (completion) {
             _completion = completion;
         }
-        
-        [self resizeViews];
-        
-        _alertView.center = [self centerWithFrame:frame];
-        
+
         //更新背景手势点击处理
         [self setupGestures:isTapEnable];
         
@@ -213,35 +193,6 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
 
 //customAlertView
 - (id)initWithCustomView:(UIView*)customView{
-//    self = [super init];
-//    if (self) {
-//        _mainWindow = [self windowWithLevel:UIWindowLevelNormal];
-//        _alertWindow = [self windowWithLevel:UIWindowLevelAlert];
-//        if (!_alertWindow) {
-//            _alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-//            _alertWindow.windowLevel = UIWindowLevelAlert;
-//        }
-//        self.view.frame = _alertWindow.bounds;
-//        
-//        _backgroundView = [[UIView alloc] initWithFrame:_alertWindow.bounds];
-//        _backgroundView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.25];
-//        _backgroundView.alpha = 0;
-//        [self.view addSubview:_backgroundView];
-//        
-//        _alertView = customView;
-//        _alertView.backgroundColor = [UIColor colorWithWhite:0.25 alpha:1];
-//        _alertView.layer.cornerRadius = 8.0;
-//        _alertView.layer.opacity = .95;
-//        _alertView.clipsToBounds = YES;
-//        [self.view addSubview:_alertView];
-//        
-//        _alertView.bounds = CGRectMake(0, 0, AlertViewWidth, _alertView.frame.size.height);
-//        [self setupGestures];
-//        
-//        _alertView.center = CGPointMake(CGRectGetMidX(_alertWindow.bounds), CGRectGetMidY(_alertWindow.bounds));
-//    }
-//    return self;
-    
     self = [super init];
     if (self) {
         _mainWindow = [self windowWithLevel:UIWindowLevelNormal];
@@ -275,6 +226,68 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
         [self setupGestures:NO];
     }
     return self;
+}
+
+/*
+ *初始化分割线及按钮
+ */
+-(void)initLineAndBtns:(NSString*)cancelTitle otherTitles:(NSArray*)otherTitles{
+    NSMutableArray *titleArray=[NSMutableArray array];
+    if (cancelTitle) {
+        [titleArray addObject:cancelTitle];
+    }
+    if (titleArray) {
+        [titleArray addObjectsFromArray:otherTitles];
+    }
+    
+    //如果2个按钮
+    if (titleArray.count==2) {
+        //横向分割线
+        CALayer *lineLayer = [self lineLayer];
+        [self.alertView.layer addSublayer:lineLayer];
+        [_lineLayerArray addObject:lineLayer];
+        
+        //first button
+        NSString *title0=[titleArray objectAtIndex:0];
+        UIButton *button0 = [self genericButton];
+        [button0 setTitle:title0 forState:UIControlStateNormal];
+        [self.alertView addSubview:button0];
+        if (cancelTitle) {
+            self.cancelButton=button0;
+            self.cancelButton.titleLabel.font = [UIFont boldSystemFontOfSize:17];
+        }
+        self.buttons = (self.buttons) ? [self.buttons arrayByAddingObject:button0] : @[ button0 ];
+        
+        //垂直分割线
+        self.verticalLine = [self lineLayer];
+        [self.alertView.layer addSublayer:self.verticalLine];
+        [_lineLayerArray addObject:self.verticalLine];
+        
+        //second button
+        NSString *title1=[titleArray objectAtIndex:1];
+        UIButton *button1 = [self genericButton];
+        [button1 setTitle:title1 forState:UIControlStateNormal];
+        [self.alertView addSubview:button1];
+        self.otherButton = button1;
+        self.buttons = (self.buttons) ? [self.buttons arrayByAddingObject:button1] : @[ button1 ];
+    }else{
+        for (int i=0; i<titleArray.count; i++) {
+            CALayer *lineLayer = [self lineLayer];
+            lineLayer.frame = CGRectMake(0, 0, AlertViewWidth, AlertViewLineLayerWidth);
+            [self.alertView.layer addSublayer:lineLayer];
+            [_lineLayerArray addObject:lineLayer];
+            
+            NSString *title=[titleArray objectAtIndex:i];
+            UIButton *button = [self genericButton];
+            [button setTitle:title forState:UIControlStateNormal];
+            [self.alertView addSubview:button];
+            if (cancelTitle&&i==0) {
+                self.cancelButton=button;
+                self.cancelButton.titleLabel.font = [UIFont boldSystemFontOfSize:17];
+            }
+            self.buttons = (self.buttons) ? [self.buttons arrayByAddingObject:button] : @[ button ];
+        }
+    }
 }
 
 - (CGRect)frameForOrientation:(UIInterfaceOrientation)orientation
@@ -361,30 +374,6 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
         [self.backgroundView setUserInteractionEnabled:NO];
         [self.backgroundView setMultipleTouchEnabled:NO];
     }
-}
-
-- (void)resizeViews
-{
-    CGFloat totalHeight = 0;
-    //titleLab、contentView、messagelab布局
-    for (UIView *view in [self.alertView subviews]) {
-        if ([view class] != [UIButton class]&& view!=self.alertBgImageView) {
-            totalHeight += view.frame.size.height + AlertViewVerticalElementSpace;
-        }
-    }
-    //按钮布局
-    if (self.buttons) {
-        NSUInteger otherButtonsCount = [self.buttons count];
-        totalHeight += AlertViewButtonHeight * (otherButtonsCount > 2 ? otherButtonsCount : 1);
-    }
-    totalHeight += AlertViewVerticalElementSpace;
-    
-    self.alertView.frame = CGRectMake(self.alertView.frame.origin.x,
-                                      self.alertView.frame.origin.y,
-                                      self.alertView.frame.size.width,
-                                      totalHeight);
-    
-    self.alertBgImageView.frame=self.alertView.bounds;
 }
 
 //按钮进入点击态的事件处理方法
@@ -670,7 +659,7 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
     return alertView;
 }
 
-/**
+/*
  *  自定义样式的alertView
  *
  */
@@ -727,7 +716,7 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
     return alertView;
 }
 
-/**
+/*
  * 设置PXAlertViewStyle可选样式样式
  */
 -(void)setAlertViewStyle:(PXAlertViewStyle)alertViewStyle{
@@ -752,8 +741,6 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
     if (styleOption.alertViewBgimage) {
         _alertBgImageView.image=styleOption.alertViewBgimage;
         _alertView.backgroundColor = [UIColor clearColor];
-    }else{
-        _alertBgImageView.backgroundColor=[UIColor clearColor];
     }
     
     self.titleLabel.textColor = styleOption.titleColor;
@@ -767,56 +754,21 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
     }
     
     //更新lineLayer
-    [self.lineLayerSet enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
+    [self.lineLayerArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         CALayer *lineLayer=(CALayer*)obj;
         lineLayer.backgroundColor=[self.styleOption.lineColor CGColor];
     }];
-}
-
-- (NSInteger)addButtonWithTitle:(NSString *)title
-{
-    UIButton *button = [self genericButton];
-    [button setTitle:title forState:UIControlStateNormal];
     
-    if (!self.cancelButton) {
-        self.cancelButton = button;
-        self.cancelButton.frame = CGRectMake(0, self.buttonsY, AlertViewWidth, AlertViewButtonHeight);
-        self.cancelButton.titleLabel.font = [UIFont boldSystemFontOfSize:17];
-    } else if (self.buttons && [self.buttons count] > 1) {
-        UIButton *lastButton = (UIButton *)[self.buttons lastObject];
-        lastButton.titleLabel.font = [UIFont systemFontOfSize:17];
-        if ([self.buttons count] == 2) {
-            [self.verticalLine removeFromSuperlayer];
-            CALayer *lineLayer = [self lineLayer];
-            lineLayer.frame = CGRectMake(0, self.buttonsY + AlertViewButtonHeight, AlertViewWidth, AlertViewLineLayerWidth);
-            [self.alertView.layer addSublayer:lineLayer];
-            lastButton.frame = CGRectMake(0, self.buttonsY + AlertViewButtonHeight, AlertViewWidth, AlertViewButtonHeight);
-            self.cancelButton.frame = CGRectMake(0, self.buttonsY, AlertViewWidth, AlertViewButtonHeight);
-            
-            [_lineLayerSet addObject:lineLayer];
-        }
-        CGFloat lastButtonYOffset = lastButton.frame.origin.y + AlertViewButtonHeight;
-        button.frame = CGRectMake(0, lastButtonYOffset, AlertViewWidth, AlertViewButtonHeight);
-        CALayer *lineLayer = [self lineLayer];
-        lineLayer.frame = CGRectMake(0, lastButtonYOffset, AlertViewWidth, AlertViewLineLayerWidth);
-        [self.alertView.layer addSublayer:lineLayer];
-        [_lineLayerSet addObject:lineLayer];
-    } else {
-        self.verticalLine = [self lineLayer];
-        self.verticalLine.frame = CGRectMake(AlertViewWidth/2, self.buttonsY, AlertViewLineLayerWidth, AlertViewButtonHeight);
-        [self.alertView.layer addSublayer:self.verticalLine];
-        button.frame = CGRectMake(AlertViewWidth/2, self.buttonsY, AlertViewWidth/2, AlertViewButtonHeight);
-        self.otherButton = button;
-        self.cancelButton.frame = CGRectMake(0, self.buttonsY, AlertViewWidth/2, AlertViewButtonHeight);
-        [_lineLayerSet addObject:self.verticalLine];
-    }
-
-    [self.alertView addSubview:button];
-    self.buttons = (self.buttons) ? [self.buttons arrayByAddingObject:button] : @[ button ];
-    return [self.buttons count] - 1;
+    //alertView子视图布局: alertView上add以及reomew子视图，以及子视图的frame变化，均会引起resizeViews方法调用
+    [self layoutSubviews_alertView];
+    
+    //self.view子视图布局: self.view上add及remove子视图，以及子视图的frame变化，均会引起layoutSubviews_selfView方法调用
+    [self layoutSubviews_selfView];
 }
 
-/**
+
+
+/*
  *  隐藏PXAlertView，默认PXAlertViewCompletionBlock中cancelled=YES
  */
 - (void)dismissWithAnimated:(BOOL)animated{
@@ -836,8 +788,76 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
     [self setupGestures:enabled];
 }
 
+#pragma mark- layoutView
+//self.view子视图布局: self.view上add及remove子视图，以及子视图的frame变化，均会引起layoutSubviews_selfView方法调用
+-(void)layoutSubviews_selfView{
+    _alertView.center = [self centerWithFrame:self.view.frame];
+    self.alertBgImageView.frame = _alertView.bounds;
+
+}
+
+//alertView子视图布局: alertView上add以及reomew子视图，以及子视图的frame变化，均会引起resizeViews方法调用
+- (void)layoutSubviews_alertView{
+    CGFloat totalHeight = 0;
+    //titleLab、contentView、messagelab布局不包括UIButton
+    for (UIView *view in [self.alertView subviews]) {
+        if ([view class] != [UIButton class]&& view!=self.alertBgImageView) {
+            totalHeight += view.frame.size.height + AlertViewVerticalElementSpace;
+        }
+    }
+    totalHeight += AlertViewVerticalElementSpace;
+    
+    //分割线及按钮布局
+    if (self.buttons) {
+        //两个按钮时横向排列
+        if (self.buttons.count==2) {
+            //分割线
+            CALayer *lineLayer=[_lineLayerArray objectAtIndex:0];
+            lineLayer.frame = CGRectMake(0, totalHeight, AlertViewWidth, AlertViewLineLayerWidth);
+            totalHeight += lineLayer.frame.size.height;
+            
+            //first button
+            UIButton *btn0=[self.buttons objectAtIndex:0];
+            btn0.frame=CGRectMake(0, totalHeight, AlertViewWidth/2, AlertViewButtonHeight);
+            
+            //垂直分割线
+            self.verticalLine.frame = CGRectMake(AlertViewWidth/2, CGRectGetMaxY(lineLayer.frame), AlertViewLineLayerWidth, AlertViewButtonHeight);
+            
+            //second button
+            UIButton *btn1=[self.buttons objectAtIndex:1];
+            btn1.frame=CGRectMake(CGRectGetMaxX(btn0.frame), totalHeight, AlertViewWidth/2, AlertViewButtonHeight);
+            totalHeight += btn0.frame.size.height;
+        }
+        //1个按钮或者3个及以上数目按钮
+        else{
+            for (int i=0; i<self.buttons.count; i++) {
+                CALayer *lineLayer=[_lineLayerArray objectAtIndex:i];
+                lineLayer.frame = CGRectMake(0, totalHeight, AlertViewWidth, AlertViewLineLayerWidth);
+                totalHeight += lineLayer.frame.size.height;
+                
+                UIButton *btn=[self.buttons objectAtIndex:i];
+                btn.frame=CGRectMake(0, totalHeight, AlertViewWidth, AlertViewButtonHeight);
+                totalHeight += btn.frame.size.height;
+            }
+        }
+    }
+    
+    self.alertView.frame = CGRectMake(self.alertView.frame.origin.x,
+                                      self.alertView.frame.origin.y,
+                                      self.alertView.frame.size.width,
+                                      totalHeight);
+    
+    self.alertBgImageView.frame=self.alertView.bounds;
+    
+    //self.view子视图布局: self.view上add及remove子视图，以及子视图的frame变化，均会引起layoutSubviews_selfView方法调用
+    [self layoutSubviews_selfView];
+}
+
+
 @end
 
+
+#pragma mark- PXAlertViewStack
 @implementation PXAlertViewStack
 
 + (instancetype)sharedInstance

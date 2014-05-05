@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D9A119631917BDE900F27077 /* PXAlertview特性.md in Resources */ = {isa = PBXBuildFile; fileRef = D9A119621917BDE900F27077 /* PXAlertview特性.md */; };
 		D9B39BBB18F3FDAB00E3C741 /* PXAlertViewStyleOption.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B39BBA18F3FDAB00E3C741 /* PXAlertViewStyleOption.m */; };
 		D9B39BBD18F52BDF00E3C741 /* s_5.png in Resources */ = {isa = PBXBuildFile; fileRef = D9B39BBC18F52BDF00E3C741 /* s_5.png */; };
 		FA11B68217F3867100236222 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA11B68117F3867100236222 /* Foundation.framework */; };
@@ -39,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D9A119621917BDE900F27077 /* PXAlertview特性.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "PXAlertview特性.md"; sourceTree = "<group>"; };
 		D9B39BB918F3FDAB00E3C741 /* PXAlertViewStyleOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PXAlertViewStyleOption.h; sourceTree = "<group>"; };
 		D9B39BBA18F3FDAB00E3C741 /* PXAlertViewStyleOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PXAlertViewStyleOption.m; sourceTree = "<group>"; };
 		D9B39BBC18F52BDF00E3C741 /* s_5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = s_5.png; sourceTree = "<group>"; };
@@ -134,6 +136,7 @@
 				FA11B69C17F3867100236222 /* Images.xcassets */,
 				FADF87D617F99E950059B2B8 /* ExampleImage.png */,
 				D9B39BBC18F52BDF00E3C741 /* s_5.png */,
+				D9A119621917BDE900F27077 /* PXAlertview特性.md */,
 				FA11B68817F3867100236222 /* Supporting Files */,
 			);
 			path = PXAlertViewDemo;
@@ -262,6 +265,7 @@
 				D9B39BBD18F52BDF00E3C741 /* s_5.png in Resources */,
 				FA11B69517F3867100236222 /* Main_iPhone.storyboard in Resources */,
 				FA11B68C17F3867100236222 /* InfoPlist.strings in Resources */,
+				D9A119631917BDE900F27077 /* PXAlertview特性.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

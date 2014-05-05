@@ -20,7 +20,7 @@ typedef enum {
     PXAVStyleCustomization                      //自定义类型
 }PXAlertViewStyle, PXAVStyle;
 
-/**
+/*
  * PXAlertViewStyleOption是PXAlertViewStyle对应的具体样式类
  */
 @interface PXAlertViewStyleOption : NSObject
