@@ -8,16 +8,14 @@
 
 #import <Foundation/Foundation.h>
 typedef enum {
-    //可选样式类型 PXAlertViewStyle
-    PXAlertViewStyleDefault = 0,        //默认类型(系统风格)
-    PXAlertViewStyleBlack,              //黑色风格
-    PXAlertViewStyleViolet,             //紫色风格
-    
-    //完整样式类型 PXDetailStyle
-    PXAVStyleDefault=PXAlertViewStyleDefault,   //默认类型
-    PXAVStyleBlack,                             //黑色风格
-    PXAVStyleViolet,                            //紫色风格
-    PXAVStyleCustomization                      //自定义类型
+    //PXAVStyleDefault(全部主题)
+    PXAVStyleDefault=0,                         //默认主题
+    PXAVStyleBlack,                             //黑色主题
+    PXAVStyleCustomization,                     //自定义主题
+
+    //PXAlertViewStyle(预定义主题)
+    PXAlertViewStyleDefault = PXAVStyleDefault, //默认主题
+    PXAlertViewStyleBlack,                      //黑色主题
 }PXAlertViewStyle, PXAVStyle;
 
 /*
@@ -36,15 +34,21 @@ typedef enum {
 @property (nonatomic, strong) UIColor *messageColor;
 @property (nonatomic, strong) UIFont *messageFont;
 
+//按钮样式
 @property (nonatomic, strong) UIColor *cancelButtonTitleColor;
 @property (nonatomic, strong) UIColor *cancelButtonTitleHilightedColor;
+@property (nonatomic, strong) UIColor *cancelButtonBackgroundColor;
+@property (nonatomic, strong) UIColor *cancelButtonBackgroundHilightedColor;
+
 @property (nonatomic, strong) UIColor *otherButtonTitleColor;
 @property (nonatomic, strong) UIColor *otherButtonTitleHilightedColor;
-
-@property (nonatomic, strong) UIColor *cancelButtonBackgroundColor;
 @property (nonatomic, strong) UIColor *otherButtonBackgroundColor;
+@property (nonatomic, strong) UIColor *otherButtonBackgroundHilightedColor;
 
-@property (nonatomic, strong) UIColor *lineColor;
+//分割线
+@property (nonatomic, assign,readonly) PXAVStyle alertViewStyle;//(只读)
+@property (nonatomic, assign,readonly) BOOL btnStyle;//按钮样式(只读)
+@property (nonatomic, strong) UIColor *lineColor;//btnStyle==YES时有效
 
-+(PXAlertViewStyleOption*)alertViewStyleOptionWithStyle:(PXAlertViewStyle)alertViewStyle;
++(PXAlertViewStyleOption*)alertViewStyleOptionWithStyle:(PXAVStyle)alertViewStyle btnStyle:(BOOL)btnStyle;
 @end

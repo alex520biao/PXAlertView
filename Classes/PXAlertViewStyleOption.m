@@ -8,6 +8,13 @@
 
 #import "PXAlertViewStyleOption.h"
 
+@interface PXAlertViewStyleOption ()
+
+@property (nonatomic, assign,readwrite) BOOL btnStyle;//按钮样式
+@property (nonatomic, assign,readwrite) PXAVStyle alertViewStyle;//弹框样式
+
+@end
+
 @implementation PXAlertViewStyleOption
 @synthesize windowTintColor;
 @synthesize alertViewBgColor;
@@ -19,96 +26,117 @@
 @synthesize cancelButtonBackgroundColor;
 @synthesize otherButtonBackgroundColor;
 @synthesize lineColor=_lineColor;
+@synthesize btnStyle=_btnStyle;
+@synthesize otherButtonBackgroundHilightedColor=_otherButtonBackgroundHilightedColor;
+@synthesize cancelButtonBackgroundHilightedColor=_cancelButtonBackgroundHilightedColor;
 
-+(PXAlertViewStyleOption*)alertViewStyleOptionWithStyle:(PXAlertViewStyle)alertViewStyle{
-    //默认样式
-    PXAlertViewStyleOption *styleOption=[PXAlertViewStyleOption alertViewStyleOptionDefault];
-   
-    //黑色风格
-    if (alertViewStyle==PXAlertViewStyleBlack){
-        styleOption=[PXAlertViewStyleOption alertViewStyleOptionBlack];
-    }
-    //紫色风格
-    else if (alertViewStyle==PXAlertViewStyleViolet){
-        styleOption=[PXAlertViewStyleOption alertViewStyleOptionViolet];
-    }
-    
++(PXAlertViewStyleOption*)alertViewStyleOptionWithStyle:(PXAVStyle)alertViewStyle btnStyle:(BOOL)btnStyle{
+    PXAlertViewStyleOption *styleOption=[[PXAlertViewStyleOption alloc] initWithAlertViewStyle:alertViewStyle btnStyle:btnStyle];
     return styleOption;
 }
 
-#pragma mark- PXAlertViewStyle-->PXAlertViewStyleOption
+- (instancetype)initWithAlertViewStyle:(PXAVStyle)alertViewStyle btnStyle:(BOOL)btnStyle{
+    self = [super init];
+    if (self) {
+        _alertViewStyle=alertViewStyle;
+        _btnStyle=btnStyle;
+        
+        if (alertViewStyle==PXAVStyleDefault) {
+            //默认样式
+            [self alertViewStyleOptionDefault];
+        }else if (alertViewStyle==PXAVStyleBlack){
+            //黑色风格
+            [self alertViewStyleOptionBlack];
+        }else if (alertViewStyle==PXAVStyleCustomization){
+            //自定义风格: 使用默认风格，然后通过block修改属性
+            [self alertViewStyleOptionDefault];
+        }else{
+            //默认样式
+            [self alertViewStyleOptionDefault];
+        }
+    }
+    return self;
+}
+
+#pragma mark- PXAViewStyle-->PXAlertViewStyleOption
 //默认样式
-+(PXAlertViewStyleOption*)alertViewStyleOptionDefault{
-    PXAlertViewStyleOption *styleOption=[[PXAlertViewStyleOption alloc] init];
-    styleOption.windowTintColor=[UIColor colorWithWhite:0 alpha:0.25];
-    styleOption.alertViewBgColor=[UIColor whiteColor];
+-(void)alertViewStyleOptionDefault{
+    self.windowTintColor=[UIColor colorWithWhite:0 alpha:0.25];
+    self.alertViewBgColor=[UIColor whiteColor];
     
-    styleOption.titleFont=[UIFont boldSystemFontOfSize:17];
-    styleOption.titleColor=[UIColor blackColor];
+    self.titleFont=[UIFont boldSystemFontOfSize:17];
+    self.titleColor=[UIColor blackColor];
     
-    styleOption.messageColor=[UIColor blackColor];
-    styleOption.messageFont=[UIFont systemFontOfSize:15.0];
+    self.messageColor=[UIColor blackColor];
+    self.messageFont=[UIFont systemFontOfSize:15.0];
     
-    styleOption.cancelButtonTitleColor=[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1];
-    styleOption.cancelButtonTitleHilightedColor=[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1];
-    styleOption.cancelButtonBackgroundColor=[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.1];
-    
-    styleOption.otherButtonTitleColor=[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1];
-    styleOption.otherButtonTitleHilightedColor=[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1];
-    styleOption.otherButtonBackgroundColor=[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.1];
-    
-    styleOption.lineColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.3];
-    return styleOption;
+    if (self.btnStyle) {
+        self.lineColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.3];
+        
+        self.cancelButtonTitleColor=[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1];
+        self.cancelButtonTitleHilightedColor=[UIColor whiteColor];
+        self.cancelButtonBackgroundColor=[UIColor clearColor];
+        self.cancelButtonBackgroundHilightedColor=[UIColor blueColor];
+        
+        self.otherButtonTitleColor=[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1];
+        self.otherButtonTitleHilightedColor=[UIColor whiteColor];
+        self.otherButtonBackgroundColor=[UIColor clearColor];
+        self.otherButtonBackgroundHilightedColor=[UIColor blueColor];
+    }else{
+        self.lineColor = [UIColor clearColor];
+        
+        self.cancelButtonTitleColor=[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1];
+        self.cancelButtonTitleHilightedColor=[UIColor whiteColor];
+        self.cancelButtonBackgroundColor=[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.1];
+        self.cancelButtonBackgroundHilightedColor=[UIColor blueColor];
+        
+        self.otherButtonTitleColor=[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1];
+        self.otherButtonTitleHilightedColor=[UIColor whiteColor];
+        self.otherButtonBackgroundColor=[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.1];
+        self.otherButtonBackgroundHilightedColor=[UIColor blueColor];
+    }
 }
 
 //黑色风格
-+(PXAlertViewStyleOption*)alertViewStyleOptionBlack{
-    PXAlertViewStyleOption *styleOption=[[PXAlertViewStyleOption alloc] init];
-    styleOption.windowTintColor=[UIColor colorWithWhite:0 alpha:0.25];
-    styleOption.alertViewBgColor=[UIColor colorWithWhite:0.25 alpha:1];
+-(void)alertViewStyleOptionBlack{
+    //初始默认设置
+    [self alertViewStyleOptionDefault];
     
-    styleOption.titleFont=[UIFont boldSystemFontOfSize:17];
-    styleOption.titleColor=[UIColor whiteColor];
+    self.windowTintColor=[UIColor colorWithWhite:0 alpha:0.25];
+    self.alertViewBgColor=[UIColor colorWithWhite:0.25 alpha:1];
     
-    styleOption.messageColor=[UIColor whiteColor];
-    styleOption.messageFont=[UIFont systemFontOfSize:15];
+    self.titleFont=[UIFont boldSystemFontOfSize:17];
+    self.titleColor=[UIColor whiteColor];
     
-    styleOption.cancelButtonTitleColor=[UIColor whiteColor];
-    styleOption.cancelButtonTitleHilightedColor=[UIColor blackColor];
-    styleOption.cancelButtonBackgroundColor=[UIColor colorWithRed:94/255.0 green:196/255.0 blue:221/255.0 alpha:1.0];
+    self.messageColor=[UIColor whiteColor];
+    self.messageFont=[UIFont systemFontOfSize:15];
     
-    styleOption.otherButtonTitleColor=[UIColor whiteColor];
-    styleOption.otherButtonTitleHilightedColor=[UIColor blackColor];
-    styleOption.otherButtonBackgroundColor=[UIColor colorWithRed:94/255.0 green:196/255.0 blue:221/255.0 alpha:1.0];
-    
-    styleOption.lineColor = [UIColor colorWithWhite:0.90 alpha:0.3];
-    return styleOption;
+    if (self.btnStyle) {
+        self.lineColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.3];
+        
+        self.cancelButtonTitleColor=[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1];
+        self.cancelButtonTitleHilightedColor=[UIColor whiteColor];
+        self.cancelButtonBackgroundColor=[UIColor clearColor];
+        self.cancelButtonBackgroundHilightedColor=[UIColor blueColor];
+        
+        self.otherButtonTitleColor=[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1];
+        self.otherButtonTitleHilightedColor=[UIColor whiteColor];
+        self.otherButtonBackgroundColor=[UIColor clearColor];
+        self.otherButtonBackgroundHilightedColor=[UIColor blueColor];
+    }else{
+        self.lineColor = [UIColor colorWithWhite:0.90 alpha:0.3];
+        
+        self.cancelButtonTitleColor=[UIColor whiteColor];
+        self.cancelButtonTitleHilightedColor=[UIColor blackColor];
+        self.cancelButtonBackgroundColor=[UIColor colorWithRed:94/255.0 green:196/255.0 blue:221/255.0 alpha:1.0];
+        self.cancelButtonBackgroundHilightedColor=[UIColor blueColor];
+        
+        self.otherButtonTitleColor=[UIColor whiteColor];
+        self.otherButtonTitleHilightedColor=[UIColor blackColor];
+        self.otherButtonBackgroundColor=[UIColor colorWithRed:94/255.0 green:196/255.0 blue:221/255.0 alpha:1.0];
+        self.otherButtonBackgroundHilightedColor=[UIColor blueColor];
+    }
 }
-
-//紫色风格
-+(PXAlertViewStyleOption*)alertViewStyleOptionViolet{
-    PXAlertViewStyleOption *styleOption=[[PXAlertViewStyleOption alloc] init];
-    styleOption.windowTintColor=[UIColor colorWithWhite:0 alpha:0.25];
-    styleOption.alertViewBgColor=[UIColor whiteColor];
-    
-    styleOption.titleFont=[UIFont boldSystemFontOfSize:17];
-    styleOption.titleColor=[UIColor blackColor];
-    
-    styleOption.messageColor=[UIColor blackColor];
-    styleOption.messageFont=[UIFont systemFontOfSize:15.0];
-    
-    styleOption.cancelButtonTitleColor=[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1];
-    styleOption.cancelButtonTitleHilightedColor=[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1];
-    styleOption.cancelButtonBackgroundColor=[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.1];
-    
-    styleOption.otherButtonTitleColor=[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1];
-    styleOption.otherButtonTitleHilightedColor=[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1];
-    styleOption.otherButtonBackgroundColor=[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.1];
-    
-    styleOption.lineColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.3];
-    return styleOption;
-}
-
 
 
 

@@ -20,7 +20,7 @@ typedef void(^PXAlertViewCompletionBlock)(BOOL cancelled, NSInteger buttonIndex)
 /*
  * 设置PXAlertViewStyle可选样式样式
  */
--(void)setAlertViewStyle:(PXAlertViewStyle)alertViewStyle;
+-(void)setAlertViewStyle:(PXAlertViewStyle)alertViewStyle btnStyle:(BOOL)btnStyle;
 
 /*
  * Dismisses the receiver, optionally with animation.
@@ -41,26 +41,6 @@ typedef void(^PXAlertViewCompletionBlock)(BOOL cancelled, NSInteger buttonIndex)
 
 
 #pragma mark- 快捷方法
-+ (instancetype)showAlertWithTitle:(NSString *)title;
-
-+ (instancetype)showAlertWithTitle:(NSString *)title
-                           message:(NSString *)message;
-
-+ (instancetype)showAlertWithTitle:(NSString *)title
-                           message:(NSString *)message
-                        completion:(PXAlertViewCompletionBlock)completion;
-
-+ (instancetype)showAlertWithTitle:(NSString *)title
-                           message:(NSString *)message
-                       cancelTitle:(NSString *)cancelTitle
-                        completion:(PXAlertViewCompletionBlock)completion;
-
-+ (instancetype)showAlertWithTitle:(NSString *)title
-                           message:(NSString *)message
-                       cancelTitle:(NSString *)cancelTitle
-                        otherTitle:(NSString *)otherTitle
-                        completion:(PXAlertViewCompletionBlock)completion;
-
 /*
  * @param otherTitles Must be a NSArray containing type NSString, or set to nil for no otherTitles.
  */
@@ -70,14 +50,6 @@ typedef void(^PXAlertViewCompletionBlock)(BOOL cancelled, NSInteger buttonIndex)
                        otherTitles:(NSArray *)otherTitles
                         completion:(PXAlertViewCompletionBlock)completion;
 
-
-+ (instancetype)showAlertWithTitle:(NSString *)title
-                           message:(NSString *)message
-                       cancelTitle:(NSString *)cancelTitle
-                        otherTitle:(NSString *)otherTitle
-                       contentView:(UIView *)view
-                        completion:(PXAlertViewCompletionBlock)completion;
-
 /*
  *  自定义样式的alertView
  *
@@ -85,6 +57,7 @@ typedef void(^PXAlertViewCompletionBlock)(BOOL cancelled, NSInteger buttonIndex)
 + (instancetype)showAlertWithTitle:(NSString *)title
                            message:(NSString *)message
                        contentView:(UIView*)contentView
+                          btnStyle:(BOOL)btnStyle
                      customization:(CustomizationBlock)customization
                         completion:(PXAlertViewCompletionBlock)completion
                        cancelTitle:(NSString *)cancelTitle
@@ -98,6 +71,7 @@ typedef void(^PXAlertViewCompletionBlock)(BOOL cancelled, NSInteger buttonIndex)
                        cancelTitle:(NSString *)cancelTitle
                        otherTitles:(NSArray *)otherTitles
                        contentView:(UIView *)view
+                          btnStyle:(BOOL)btnStyle
                         completion:(PXAlertViewCompletionBlock)completion;
 
 //完全自定义alertView

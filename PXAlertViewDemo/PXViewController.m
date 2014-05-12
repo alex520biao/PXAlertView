@@ -36,25 +36,60 @@
     return YES;
 }
 
-- (IBAction)showSimpleAlertView:(id)sender
-{
-    [PXAlertView showAlertWithTitle:@"Hello World"
-                            message:@"Oh my this looks like a nice message."
-                        cancelTitle:@"Ok"
+
+#pragma mark- PXAlertViewDemo
+- (IBAction)showSimpleAlertView:(id)sender{
+    [PXAlertView showAlertWithTitle:@"PorridgeNew"
+                            message:@"How would you like it?"
+                        contentView:nil
+                           btnStyle:NO
+                      customization:nil
                          completion:^(BOOL cancelled, NSInteger buttonIndex) {
                              if (cancelled) {
-                                 NSLog(@"Simple Alert View cancelled");
+                                 NSLog(@"Cancel button pressed");
                              } else {
-                                 NSLog(@"Simple Alert View dismissed, but not cancelled");
+                                 NSLog(@"Button with index %li pressed", (long)buttonIndex);
                              }
-                         }];
+                         }
+                        cancelTitle:@"Cancel"
+                        otherTitles:nil];
+
+    [PXAlertView showAlertWithTitle:@"PorridgeNew"
+                            message:@"How would you like it?"
+                        contentView:nil
+                           btnStyle:NO
+                      customization:nil
+                         completion:^(BOOL cancelled, NSInteger buttonIndex) {
+                             if (cancelled) {
+                                 NSLog(@"Cancel button pressed");
+                             } else {
+                                 NSLog(@"Button with index %li pressed", (long)buttonIndex);
+                             }
+                         } cancelTitle:@"Cancel"
+                        otherTitles:@"Too Hot",nil];
+    
+    [PXAlertView showAlertWithTitle:@"PorridgeNew"
+                            message:@"How would you like it?"
+                        contentView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ExampleImage.png"]]
+                           btnStyle:NO
+                      customization:^PXAlertViewStyleOption *(PXAlertView *alertView, PXAlertViewStyleOption *styleOption) {
+                          return styleOption;
+                      } completion:^(BOOL cancelled, NSInteger buttonIndex) {
+                          if (cancelled) {
+                              NSLog(@"Cancel button pressed");
+                          } else {
+                              NSLog(@"Button with index %li pressed", (long)buttonIndex);
+                          }
+                      } cancelTitle:@"Cancel"
+                        otherTitles:@"Too Hot", @"Luke Warm", @"Quite nippy",@"Other1",@"Other2",nil];
 }
 
 - (IBAction)showSimpleCustomizedAlertView:(id)sender{
     //customization自定义alertView样式
-    [PXAlertView showAlertWithTitle:@"I'm title"
+    PXAlertView *alertView=[PXAlertView showAlertWithTitle:@"I'm title"
                             message:@"I'm message。alertView背景、各个按钮、contentView、title、message等均可自定义。"
                         contentView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ExampleImage.png"]]
+                           btnStyle:YES
                       customization:^PXAlertViewStyleOption *(PXAlertView *alertView,PXAlertViewStyleOption *styleOption) {
                           //返回的styleOption为默认样式
                           styleOption.windowTintColor=[UIColor colorWithRed:94/255.0 green:196/255.0 blue:221/255.0 alpha:0.25];
@@ -71,15 +106,27 @@
                           styleOption.messageColor=[UIColor cyanColor];
                           styleOption.messageFont=[UIFont systemFontOfSize:14.0];
                           
-                          styleOption.cancelButtonBackgroundColor=[UIColor redColor];
-                          styleOption.otherButtonBackgroundColor=[UIColor blueColor];
+                          styleOption.cancelButtonBackgroundColor=[UIColor clearColor];
+                          styleOption.cancelButtonTitleHilightedColor=[UIColor blueColor];
+                          styleOption.cancelButtonTitleColor=[UIColor blueColor];
                           
+                          styleOption.otherButtonBackgroundColor=[UIColor clearColor];
+                          styleOption.otherButtonBackgroundHilightedColor=[UIColor blueColor];
+                          styleOption.otherButtonTitleColor=[UIColor whiteColor];
                           styleOption.lineColor=[UIColor blueColor];
+                          
                           return styleOption;
                       } completion:^(BOOL cancelled, NSInteger buttonIndex) {
                           
                       } cancelTitle:@"Cancel"
                         otherTitles:@"Other1",@"Other2",@"Other3",nil];
+    
+    //dispatch计时器
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        //黑色风格
+        [alertView setAlertViewStyle:PXAlertViewStyleBlack btnStyle:YES];
+    });
 }
 
 
@@ -88,62 +135,38 @@
     UIImageView *contentView=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ExampleImage.png"]];
 //    contentView.frame=CGRectMake(0, 0, 300, 300);
     PXAlertView *alertView=[PXAlertView showAlertWithTitle:@"Why this is a larger title! Even larger than the largest large thing that ever was large in a very large way."
-                            message:@"Oh my this looks like a nice message. Yes it does, and it can span multiple lines... all the way down."
-                        cancelTitle:@"Ok thanks, that's grand"
-                        otherTitle:@"1234"
-                        contentView:contentView
-                         completion:^(BOOL cancelled, NSInteger buttonIndex) {
-                             if (cancelled) {
-                                 NSLog(@"Larger Alert View cancelled");
-                             } else {
-                                 NSLog(@"Larger Alert View dismissed, but not cancelled");
-                             }
-                         }];
+                                                   message:@"Oh my this looks like a nice message. Yes it does, and it can span multiple lines... all the way down."
+                                               contentView:contentView
+                                                  btnStyle:NO
+                                             customization:^PXAlertViewStyleOption *(PXAlertView *alertView, PXAlertViewStyleOption *styleOption) {
+                                                 return styleOption;
+                                             } completion:^(BOOL cancelled, NSInteger buttonIndex) {
+                                                 
+                                             } cancelTitle:@"Ok thanks, that's grand"
+                                               otherTitles:@"1234",nil];
     //黑色风格
-    [alertView setAlertViewStyle:PXAlertViewStyleBlack];
+    [alertView setAlertViewStyle:PXAlertViewStyleBlack btnStyle:YES];
+
+    //点击背景关闭
+    [alertView setTapToDismissEnabled:YES];
 }
 
-- (IBAction)showTwoButtonAlertView:(id)sender
-{
-    PXAlertView *alertView = [PXAlertView showAlertWithTitle:@"The Matrix"
-                            message:@"Pick the Red pill, or the blue pill"
-                        cancelTitle:@"Cancel"
-                         otherTitle:@"Other"
-                         completion:^(BOOL cancelled, NSInteger buttonIndex) {
-                             if (cancelled) {
-                                 NSLog(@"Cancel (Blue) button pressed");
-                             } else {
-                                 NSLog(@"Other (Red) button pressed");
-                             }
-                         }];
+
+- (IBAction)dismissWithNoAnimationAfter1Second:(id)sender{
+    
+    PXAlertView *alertView = [PXAlertView showAlertWithTitle:@"No Animation"
+                                                     message:@"When dismissed"
+                                                 cancelTitle:@"OK"
+                                                 otherTitles:nil
+                                                  completion:nil];
+    
+    //dispatch计时器
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [alertView dismissWithClickedButtonIndex:0 animated:NO];
+    });
 }
 
-- (IBAction)showMultiButtonAlertView:(id)sender
-{
-    [PXAlertView showAlertWithTitle:@"Porridge"
-                            message:@"How would you like it?"
-                        cancelTitle:nil
-                        otherTitles:@[ @"Too Hot", @"Luke Warm", @"Quite nippy" ]
-                         completion:^(BOOL cancelled, NSInteger buttonIndex) {
-                             if (cancelled) {
-                                 NSLog(@"Cancel button pressed");
-                             } else {
-                                 NSLog(@"Button with index %li pressed", (long)buttonIndex);
-                             }
-                         }];
-}
-
-- (IBAction)showAlertViewWithContentView:(id)sender
-{
-    [PXAlertView showAlertWithTitle:@"A picture should appear below"
-                            message:@"Yay, it works!"
-                        cancelTitle:@"Cancel"
-                         otherTitles:@[ @"Too Hot", @"Luke Warm", @"Quite nippy" ]
-                        contentView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ExampleImage.png"]]
-                         completion:^(BOOL cancelled, NSInteger buttonIndex) {
-                             NSLog(@"%d",buttonIndex);
-                         }];
-}
 
 //完全自定义弹框
 - (IBAction)showAlertViewWithCustomView:(id)sender{
@@ -175,41 +198,8 @@
     customView.backgroundColor=[UIColor blueColor];
 }
 
-- (IBAction)show5StackedAlertViews:(id)sender
-{
-    for (int i = 1; i <= 5; i++) {
-        [PXAlertView showAlertWithTitle:[NSString stringWithFormat:@"Hello %@", @(i)]
-                                message:@"Oh my this looks like a nice message."
-                            cancelTitle:@"Ok"
-                             completion:^(BOOL cancelled, NSInteger buttonIndex) {}];
-    }
-}
 
-- (IBAction)showNoTapToDismiss:(id)sender
-{
-    PXAlertView *alertView = [PXAlertView showAlertWithTitle:@"Tap"
-                                                     message:@"Try tapping around the alert view to dismiss it. This should NOT work on this alert."];
-    [alertView setTapToDismissEnabled:YES];
-}
-
-- (IBAction)dismissWithNoAnimationAfter1Second:(id)sender
-{
-    PXAlertView *alertView = [PXAlertView showAlertWithTitle:@"No Animation" message:@"When dismissed"];
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [alertView dismissWithClickedButtonIndex:0 animated:NO];
-    });
-}
-
-- (IBAction)showAlertInsideAlertCompletion:(id)sender
-{
-    [PXAlertView showAlertWithTitle:@"Alert Inception"
-                            message:@"After pressing ok, another alert should appear"
-                         completion:^(BOOL cancelled, NSInteger buttonIndex) {
-                             [PXAlertView showAlertWithTitle:@"Woohoo"];
-                         }];
-}
-
+#pragma mark-UIAlertView
 - (IBAction)showLargeUIAlertView:(id)sender
 {
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Some really long title that should wrap to two lines at least. But does it cut off after a certain number of lines? Does it? Does it really? And then what? Does it truncate? Nooo it still hasn't cut off yet. Wow this AlertView can take a lot of characters."
@@ -218,6 +208,14 @@
                      cancelButtonTitle:@"Cancel"
                      otherButtonTitles:@"Too Hot", @"Luke Warm", @"Quite nippy", nil];
     [alertView show];
+    
+    
+    UIAlertView *alertView1 = [[UIAlertView alloc] initWithTitle:@"title1"
+                                                        message:@"message1"
+                                                       delegate:self
+                                              cancelButtonTitle:@"Cancel"
+                                              otherButtonTitles:@"Too Hot", @"Luke Warm", @"Quite nippy", nil];
+    [alertView1 show];
 }
 
 //关闭当前alertView

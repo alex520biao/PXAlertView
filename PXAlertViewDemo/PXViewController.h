@@ -14,11 +14,6 @@
 
 - (IBAction)showSimpleAlertView:(id)sender;
 - (IBAction)showLargeAlertView:(id)sender;
-- (IBAction)showTwoButtonAlertView:(id)sender;
-- (IBAction)showMultiButtonAlertView:(id)sender;
-- (IBAction)showAlertViewWithContentView:(id)sender;
-- (IBAction)show5StackedAlertViews:(id)sender;
-- (IBAction)showAlertInsideAlertCompletion:(id)sender;
 
 - (IBAction)showLargeUIAlertView:(id)sender;
 

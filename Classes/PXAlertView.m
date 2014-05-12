@@ -10,7 +10,7 @@
 
 @interface PXAlertViewStack : NSObject
 
-@property (nonatomic) NSMutableArray *alertViews;
+@property (nonatomic,strong) NSMutableArray *alertViews;
 
 + (PXAlertViewStack *)sharedInstance;
 
@@ -23,24 +23,24 @@ static const CGFloat AlertViewWidth = 270.0;
 static const CGFloat AlertViewContentMargin = 9;
 static const CGFloat AlertViewVerticalElementSpace = 10;
 static const CGFloat AlertViewButtonHeight = 44;
-static const CGFloat AlertViewLineLayerWidth = 0.5;
+static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
 
 @interface PXAlertView ()
+@property (nonatomic,weak) UIWindow *mainWindow; //程序主window
+@property (nonatomic,strong) UIWindow *alertWindow;//PXAlertView所在的window
 
-@property (nonatomic) UIWindow *mainWindow;
-@property (nonatomic,strong) UIWindow *alertWindow;
-@property (nonatomic) UIView *backgroundView;
-@property (nonatomic) UIView *alertView;
-@property (nonatomic) UIImageView *alertBgImageView;
-@property (nonatomic) UILabel *titleLabel;
-@property (nonatomic) UIView *contentView;
-@property (nonatomic) UILabel *messageLabel;
-@property (nonatomic) UIButton *cancelButton;
-@property (nonatomic) UIButton *otherButton;
-@property (nonatomic) NSArray *buttons;
-@property (nonatomic) CGFloat buttonsY;
-@property (nonatomic) CALayer *verticalLine;
-@property (nonatomic) UITapGestureRecognizer *tap;
+@property (nonatomic,strong) UIView *backgroundView;
+@property (nonatomic,strong) UIView *alertView;
+@property (nonatomic,strong) UIImageView *alertBgImageView;
+@property (nonatomic,strong) UILabel *titleLabel;
+@property (nonatomic,strong) UIView *contentView;
+@property (nonatomic,strong) UILabel *messageLabel;
+@property (nonatomic,strong) UIButton *cancelButton;
+@property (nonatomic,strong) UIButton *otherButton;
+@property (nonatomic,strong) NSArray *buttons;
+@property (nonatomic,assign) CGFloat buttonsY;
+@property (nonatomic,strong) UIImageView *verticalLine;
+@property (nonatomic,strong) UITapGestureRecognizer *tap;
 @property (nonatomic, copy) void (^completion)(BOOL cancelled, NSInteger buttonIndex);
 
 //存放所有分割线(横向、纵向)
@@ -53,6 +53,7 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
 
 @implementation PXAlertView
 @synthesize styleOption=_styleOption;
+@synthesize lineLayerArray=_lineLayerArray;
 
 - (UIWindow *)windowWithLevel:(UIWindowLevel)windowLevel
 {
@@ -68,24 +69,10 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
 - (id)initWithTitle:(NSString *)title
             message:(NSString *)message
         cancelTitle:(NSString *)cancelTitle
-         otherTitle:(NSString *)otherTitle
-        contentView:(UIView *)contentView
-         completion:(PXAlertViewCompletionBlock)completion
-{
-    return [self initWithTitle:title
-                       message:message
-                   cancelTitle:cancelTitle
-                   otherTitles:(otherTitle) ? @[ otherTitle ] : nil
-                   contentView:contentView
-                    completion:completion
-                   tapGestures:NO];
-}
-
-- (id)initWithTitle:(NSString *)title
-            message:(NSString *)message
-        cancelTitle:(NSString *)cancelTitle
         otherTitles:(NSArray *)otherTitles
         contentView:(UIView *)contentView
+           btnStyle:(BOOL)btnStyle
+     alertViewStyle:(PXAlertViewStyle)alertViewStyle
          completion:(PXAlertViewCompletionBlock)completion
         tapGestures:(BOOL)isTapEnable
 {
@@ -149,8 +136,8 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
                                             messageLabelY,
                                             _contentView.frame.size.width,
                                             _contentView.frame.size.height);
-            _contentView.center = CGPointMake(AlertViewWidth/2, _contentView.center.y);
             [_alertView addSubview:_contentView];
+            _contentView.center = CGPointMake(floorf(AlertViewWidth/2), _contentView.center.y);
             messageLabelY += contentView.frame.size.height + AlertViewVerticalElementSpace;
         }
         
@@ -186,7 +173,7 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
         [self setupGestures:isTapEnable];
         
         //设定alertView的默认样式
-        [self setAlertViewStyle:PXAlertViewStyleDefault];
+        [self setAlertViewStyle:alertViewStyle btnStyle:btnStyle];
     }
     return self;
 }
@@ -243,8 +230,8 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
     //如果2个按钮
     if (titleArray.count==2) {
         //横向分割线
-        CALayer *lineLayer = [self lineLayer];
-        [self.alertView.layer addSublayer:lineLayer];
+        UIImageView *lineLayer = [self lineLayer];
+        [self.alertView addSubview:lineLayer];
         [_lineLayerArray addObject:lineLayer];
         
         //first button
@@ -260,7 +247,7 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
         
         //垂直分割线
         self.verticalLine = [self lineLayer];
-        [self.alertView.layer addSublayer:self.verticalLine];
+        [self.alertView addSubview:self.verticalLine];
         [_lineLayerArray addObject:self.verticalLine];
         
         //second button
@@ -272,9 +259,9 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
         self.buttons = (self.buttons) ? [self.buttons arrayByAddingObject:button1] : @[ button1 ];
     }else{
         for (int i=0; i<titleArray.count; i++) {
-            CALayer *lineLayer = [self lineLayer];
-            lineLayer.frame = CGRectMake(0, 0, AlertViewWidth, AlertViewLineLayerWidth);
-            [self.alertView.layer addSublayer:lineLayer];
+            UIImageView *lineLayer = [self lineLayer];
+            lineLayer.frame = CGRectMake(0, 2*i, AlertViewWidth, AlertViewLineLayerWidth);
+            [self.alertView addSubview:lineLayer];
             [_lineLayerArray addObject:lineLayer];
             
             NSString *title=[titleArray objectAtIndex:i];
@@ -377,31 +364,30 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
 }
 
 //按钮进入点击态的事件处理方法
-- (void)setBackgroundColorForButton:(id)sender{
-//    [sender setBackgroundColor:[UIColor colorWithRed:94/255.0 green:196/255.0 blue:221/255.0 alpha:1.0]];
+- (void)setBackgroundColorForButton:(UIButton*)sender{
     if (self.cancelButton) {
-        [sender setBackgroundColor:self.styleOption.cancelButtonBackgroundColor];
-        [sender setTitleColor:self.styleOption.cancelButtonTitleHilightedColor forState:UIControlStateHighlighted];
+        [sender setBackgroundColor:self.styleOption.cancelButtonBackgroundHilightedColor ];
+        [sender setTitleColor:self.styleOption.cancelButtonTitleHilightedColor forState:UIControlStateNormal];
     }else{
-        [sender setBackgroundColor:self.styleOption.otherButtonBackgroundColor];
-        [sender setTitleColor:self.styleOption.otherButtonTitleHilightedColor forState:UIControlStateHighlighted];
+        [sender setBackgroundColor:self.styleOption.otherButtonBackgroundHilightedColor];
+        [sender setTitleColor:self.styleOption.otherButtonTitleHilightedColor forState:UIControlStateNormal];
     }
 }
 
 //按钮从点击态切回正常态的事件处理方法
 - (void)clearBackgroundColorForButton:(id)sender{
     if (self.cancelButton) {
-        [sender setBackgroundColor:[UIColor clearColor]];
+        [sender setBackgroundColor:self.styleOption.cancelButtonBackgroundColor];
         [sender setTitleColor:self.styleOption.cancelButtonTitleColor forState:UIControlStateNormal];
     }else{
-        [sender setBackgroundColor:[UIColor clearColor]];
+        [sender setBackgroundColor:self.styleOption.otherButtonBackgroundColor];
         [sender setTitleColor:self.styleOption.otherButtonTitleColor forState:UIControlStateNormal];
     }
 }
 
 - (void)show
 {
-    [[PXAlertViewStack sharedInstance] push:self];
+    [[PXAlertViewStack sharedInstance] push:self];    
 }
 
 - (void)showInternal
@@ -516,12 +502,12 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
     [self.alertView.layer addAnimation:animation forKey:@"dismissAlert"];
 }
 
-- (CALayer *)lineLayer
+- (UIImageView *)lineLayer
 {
-    CALayer *lineLayer = [CALayer layer];
+    UIImageView *lineLayer = [[UIImageView alloc] init];
     //    lineLayer.backgroundColor = [[UIColor colorWithWhite:0.90 alpha:0.3] CGColor];
     //浅灰色
-    lineLayer.backgroundColor = [[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.3] CGColor];
+    lineLayer.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.3];
     return lineLayer;
 }
 
@@ -557,67 +543,19 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
 
 #pragma mark -
 #pragma mark Public
-
-+ (instancetype)showAlertWithTitle:(NSString *)title
-{
-    return [[self class] showAlertWithTitle:title message:nil cancelTitle:NSLocalizedString(@"Ok", nil) completion:nil];
-}
-
-+ (instancetype)showAlertWithTitle:(NSString *)title
-                           message:(NSString *)message
-{
-    return [[self class] showAlertWithTitle:title message:message cancelTitle:NSLocalizedString(@"Ok", nil) completion:nil];
-}
-
-+ (instancetype)showAlertWithTitle:(NSString *)title
-                           message:(NSString *)message
-                        completion:(PXAlertViewCompletionBlock)completion
-{
-    return [[self class] showAlertWithTitle:title message:message cancelTitle:NSLocalizedString(@"Ok", nil) completion:completion];
-}
-
-+ (instancetype)showAlertWithTitle:(NSString *)title
-                           message:(NSString *)message
-                       cancelTitle:(NSString *)cancelTitle
-                        completion:(PXAlertViewCompletionBlock)completion
-{
-    PXAlertView *alertView = [[self alloc] initWithTitle:title
-                                                 message:message
-                                             cancelTitle:cancelTitle
-                                              otherTitle:nil
-                                             contentView:nil
-                                              completion:completion];
-    [alertView show];
-    return alertView;
-}
-
-+ (instancetype)showAlertWithTitle:(NSString *)title
-                           message:(NSString *)message
-                       cancelTitle:(NSString *)cancelTitle
-                        otherTitle:(NSString *)otherTitle
-                        completion:(PXAlertViewCompletionBlock)completion
-{
-    PXAlertView *alertView = [[self alloc] initWithTitle:title
-                                                 message:message
-                                             cancelTitle:cancelTitle
-                                              otherTitle:otherTitle
-                                             contentView:nil
-                                              completion:completion];
-    [alertView show];
-    return alertView;
-}
-
 + (instancetype)showAlertWithTitle:(NSString *)title
                            message:(NSString *)message
                        cancelTitle:(NSString *)cancelTitle
                        otherTitles:(NSArray *)otherTitles
-                        completion:(PXAlertViewCompletionBlock)completion
-{
-    PXAlertView *alertView = [[self alloc] initWithTitle:title
+                        completion:(PXAlertViewCompletionBlock)completion{
+    
+    PXAlertView *alertView = [[PXAlertView alloc] initWithTitle:title
                                                  message:message
                                              cancelTitle:cancelTitle
                                              otherTitles:otherTitles
                                              contentView:nil
+                                                btnStyle:NO
+                                          alertViewStyle:PXAlertViewStyleDefault
                                               completion:completion
                                              tapGestures:NO];
     [alertView show];
@@ -627,34 +565,20 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
 + (instancetype)showAlertWithTitle:(NSString *)title
                            message:(NSString *)message
                        cancelTitle:(NSString *)cancelTitle
-                        otherTitle:(NSString *)otherTitle
-                       contentView:(UIView *)view
-                        completion:(PXAlertViewCompletionBlock)completion
-{
-    PXAlertView *alertView = [[self alloc] initWithTitle:title
-                                                 message:message
-                                             cancelTitle:cancelTitle
-                                              otherTitle:otherTitle
-                                             contentView:view
-                                              completion:completion];
-    [alertView show];
-    return alertView;
-}
-
-+ (instancetype)showAlertWithTitle:(NSString *)title
-                           message:(NSString *)message
-                       cancelTitle:(NSString *)cancelTitle
                        otherTitles:(NSArray *)otherTitles
                        contentView:(UIView *)view
-                        completion:(PXAlertViewCompletionBlock)completion
-{
-    PXAlertView *alertView = [[self alloc] initWithTitle:title
-                                                 message:message
-                                             cancelTitle:cancelTitle
-                                             otherTitles:otherTitles
-                                             contentView:view
-                                              completion:completion
-                                             tapGestures:NO];
+                          btnStyle:(BOOL)btnStyle
+                        completion:(PXAlertViewCompletionBlock)completion{
+    
+    PXAlertView *alertView = [[PXAlertView alloc] initWithTitle:title
+                                                        message:message
+                                                    cancelTitle:cancelTitle
+                                                    otherTitles:otherTitles
+                                                    contentView:view
+                                                       btnStyle:btnStyle
+                                                 alertViewStyle:PXAlertViewStyleDefault
+                                                     completion:completion
+                                                    tapGestures:NO];
     [alertView show];
     return alertView;
 }
@@ -666,6 +590,7 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
 + (instancetype)showAlertWithTitle:(NSString *)title
                  message:(NSString *)message
              contentView:(UIView*)contentView
+                btnStyle:(BOOL)btnStyle
            customization:(CustomizationBlock)customization
               completion:(PXAlertViewCompletionBlock)completion
              cancelTitle:(NSString *)cancelTitle
@@ -691,21 +616,26 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
         va_end(params);
     }
     
-    
-    PXAlertView *alertView=[PXAlertView showAlertWithTitle:title
-                                                   message:message
-                                               cancelTitle:cancelTitle
-                                               otherTitles:argsArray
-                                               contentView:contentView
-                                                completion:completion];
-    //指定样式
-    __block PXAlertViewStyleOption *styleOption=[PXAlertViewStyleOption alertViewStyleOptionWithStyle:PXAlertViewStyleDefault];
-    //自定义样式
+    //创建默认样式alertView并显示
+    PXAlertView *alertView = [[PXAlertView alloc] initWithTitle:title
+                                                        message:message
+                                                    cancelTitle:cancelTitle
+                                                    otherTitles:argsArray
+                                                    contentView:contentView
+                                                       btnStyle:btnStyle
+                                                 alertViewStyle:PXAlertViewStyleDefault
+                                                     completion:completion
+                                                    tapGestures:NO];
+    [alertView show];
+
+    //自定义样式刷新界面
     if(customization){
+        __block PXAlertViewStyleOption *styleOption=[PXAlertViewStyleOption alertViewStyleOptionWithStyle:PXAVStyleCustomization btnStyle:btnStyle];
         styleOption=customization(alertView,styleOption);
+        //更新样式
+        [alertView setStyleOption:styleOption];
     }
-    //更新样式
-    [alertView setStyleOption:styleOption];
+    
     return alertView;
 }
 
@@ -716,54 +646,71 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
     return alertView;
 }
 
-/*
- * 设置PXAlertViewStyle可选样式样式
- */
--(void)setAlertViewStyle:(PXAlertViewStyle)alertViewStyle{
-    //指定样式
-    PXAlertViewStyleOption *styleOption=[PXAlertViewStyleOption alertViewStyleOptionWithStyle:alertViewStyle];
-    //更新样式
-    [self setStyleOption:styleOption];
-}
-
 -(void)setStyleOption:(PXAlertViewStyleOption*)styleOption{
     //保存PXAlertView样式
     if (_styleOption!=styleOption) {
         _styleOption=styleOption;
+
+        //更新
+        [self updateView_styleOption];
     }
-    
+}
+
+#pragma mark-other
+/*
+ * 设置PXAlertViewStyle可选样式样式
+ */
+-(void)setAlertViewStyle:(PXAlertViewStyle)alertViewStyle btnStyle:(BOOL)btnStyle{
+    //指定样式
+    PXAlertViewStyleOption *styleOption=[PXAlertViewStyleOption alertViewStyleOptionWithStyle:alertViewStyle btnStyle:btnStyle];
+    //更新样式
+    [self setStyleOption:styleOption];
+}
+
+
+#pragma mark- updateView
+-(void)updateView_styleOption{
     /*更新PXAlertView界面*/
     //
-    self.backgroundView.backgroundColor = styleOption.windowTintColor;
+    self.backgroundView.backgroundColor = self.styleOption.windowTintColor;
     
     //alertBgImageView优先设置
-    self.alertView.backgroundColor = styleOption.alertViewBgColor;
-    if (styleOption.alertViewBgimage) {
-        _alertBgImageView.image=styleOption.alertViewBgimage;
+    self.alertView.backgroundColor = self.styleOption.alertViewBgColor;
+    if (self.styleOption.alertViewBgimage) {
+        _alertBgImageView.image=self.styleOption.alertViewBgimage;
         _alertView.backgroundColor = [UIColor clearColor];
     }
     
-    self.titleLabel.textColor = styleOption.titleColor;
-    self.titleLabel.font = styleOption.titleFont;
-    self.messageLabel.textColor = styleOption.messageColor;
-    self.messageLabel.font = styleOption.messageFont;
+    self.titleLabel.textColor = self.styleOption.titleColor;
+    self.titleLabel.font = self.styleOption.titleFont;
+    self.messageLabel.textColor = self.styleOption.messageColor;
+    self.messageLabel.font = self.styleOption.messageFont;
     
     //更新UIButton的样式
     for (UIButton *btn in self.buttons) {
         [self clearBackgroundColorForButton:btn];
+        
+        //使用分割线
+        if (self.styleOption.btnStyle) {
+            btn.layer.cornerRadius=0;//清除圆角
+        }else{
+            btn.layer.cornerRadius=5;//设置圆角
+        }
     }
     
     //更新lineLayer
     [self.lineLayerArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        CALayer *lineLayer=(CALayer*)obj;
-        lineLayer.backgroundColor=[self.styleOption.lineColor CGColor];
+        UIImageView *lineLayer=(UIImageView*)obj;
+        lineLayer.backgroundColor=self.styleOption.lineColor;
+        if (self.styleOption.btnStyle) {
+            lineLayer.hidden=NO;
+        }else{
+            lineLayer.hidden=YES;
+        }
     }];
     
     //alertView子视图布局: alertView上add以及reomew子视图，以及子视图的frame变化，均会引起resizeViews方法调用
     [self layoutSubviews_alertView];
-    
-    //self.view子视图布局: self.view上add及remove子视图，以及子视图的frame变化，均会引起layoutSubviews_selfView方法调用
-    [self layoutSubviews_selfView];
 }
 
 
@@ -793,16 +740,15 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
 -(void)layoutSubviews_selfView{
     _alertView.center = [self centerWithFrame:self.view.frame];
     self.alertBgImageView.frame = _alertView.bounds;
-
 }
 
 //alertView子视图布局: alertView上add以及reomew子视图，以及子视图的frame变化，均会引起resizeViews方法调用
 - (void)layoutSubviews_alertView{
-    CGFloat totalHeight = 0;
+    int totalHeight = 0;
     //titleLab、contentView、messagelab布局不包括UIButton
     for (UIView *view in [self.alertView subviews]) {
-        if ([view class] != [UIButton class]&& view!=self.alertBgImageView) {
-            totalHeight += view.frame.size.height + AlertViewVerticalElementSpace;
+        if (view==self.titleLabel||view==self.contentView||view==self.messageLabel) {
+            totalHeight += view.frame.size.height + AlertViewVerticalElementSpace;            
         }
     }
     totalHeight += AlertViewVerticalElementSpace;
@@ -811,35 +757,64 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
     if (self.buttons) {
         //两个按钮时横向排列
         if (self.buttons.count==2) {
-            //分割线
-            CALayer *lineLayer=[_lineLayerArray objectAtIndex:0];
-            lineLayer.frame = CGRectMake(0, totalHeight, AlertViewWidth, AlertViewLineLayerWidth);
-            totalHeight += lineLayer.frame.size.height;
-            
-            //first button
-            UIButton *btn0=[self.buttons objectAtIndex:0];
-            btn0.frame=CGRectMake(0, totalHeight, AlertViewWidth/2, AlertViewButtonHeight);
-            
-            //垂直分割线
-            self.verticalLine.frame = CGRectMake(AlertViewWidth/2, CGRectGetMaxY(lineLayer.frame), AlertViewLineLayerWidth, AlertViewButtonHeight);
-            
-            //second button
-            UIButton *btn1=[self.buttons objectAtIndex:1];
-            btn1.frame=CGRectMake(CGRectGetMaxX(btn0.frame), totalHeight, AlertViewWidth/2, AlertViewButtonHeight);
-            totalHeight += btn0.frame.size.height;
+            //使用分割线
+            if (self.styleOption.btnStyle) {
+                //分割线
+                UIImageView *lineLayer=[_lineLayerArray objectAtIndex:0];
+                lineLayer.frame = CGRectMake(0, totalHeight, AlertViewWidth, AlertViewLineLayerWidth);
+                totalHeight += lineLayer.frame.size.height;
+                
+                //first button
+                UIButton *btn0=[self.buttons objectAtIndex:0];
+                btn0.frame=CGRectMake(0, totalHeight, floorf(AlertViewWidth/2), AlertViewButtonHeight);
+                
+                //垂直分割线
+                self.verticalLine.frame = CGRectMake(floorf(AlertViewWidth/2), CGRectGetMaxY(lineLayer.frame), AlertViewLineLayerWidth, AlertViewButtonHeight);
+                
+                //second button
+                UIButton *btn1=[self.buttons objectAtIndex:1];
+                btn1.frame=CGRectMake(CGRectGetMaxX(btn0.frame), totalHeight, floorf(AlertViewWidth/2), AlertViewButtonHeight);
+                totalHeight += btn0.frame.size.height;
+            }else{
+                //first button
+                UIButton *btn0=[self.buttons objectAtIndex:0];
+                btn0.frame=CGRectMake(AlertViewVerticalElementSpace, totalHeight, floorf((AlertViewWidth-3*AlertViewVerticalElementSpace)/2), AlertViewButtonHeight);
+                
+                //second button
+                UIButton *btn1=[self.buttons objectAtIndex:1];
+                btn1.frame=CGRectMake(AlertViewVerticalElementSpace+CGRectGetMaxX(btn0.frame), totalHeight, floorf((AlertViewWidth-3*AlertViewVerticalElementSpace)/2), AlertViewButtonHeight);
+                totalHeight += btn0.frame.size.height;
+            }
         }
         //1个按钮或者3个及以上数目按钮
         else{
             for (int i=0; i<self.buttons.count; i++) {
-                CALayer *lineLayer=[_lineLayerArray objectAtIndex:i];
-                lineLayer.frame = CGRectMake(0, totalHeight, AlertViewWidth, AlertViewLineLayerWidth);
-                totalHeight += lineLayer.frame.size.height;
-                
-                UIButton *btn=[self.buttons objectAtIndex:i];
-                btn.frame=CGRectMake(0, totalHeight, AlertViewWidth, AlertViewButtonHeight);
-                totalHeight += btn.frame.size.height;
+                //使用分割线
+                if (self.styleOption.btnStyle) {
+                    UIImageView *lineLayer=[_lineLayerArray objectAtIndex:i];
+                    lineLayer.frame = CGRectMake(0, ceil(totalHeight), AlertViewWidth, AlertViewLineLayerWidth);
+                    totalHeight += lineLayer.frame.size.height;
+                    
+                    UIButton *btn=[self.buttons objectAtIndex:i];
+                    btn.frame=CGRectMake(0, totalHeight, AlertViewWidth, AlertViewButtonHeight);
+                    totalHeight += btn.frame.size.height;
+                }
+                //使用AlertViewVerticalElementSpace的空白
+                else{
+                    totalHeight += AlertViewVerticalElementSpace;
+                    
+                    UIButton *btn=[self.buttons objectAtIndex:i];
+                    btn.frame=CGRectMake(AlertViewVerticalElementSpace, totalHeight, floorf(AlertViewWidth-2*AlertViewVerticalElementSpace), AlertViewButtonHeight);
+                    btn.backgroundColor=self.styleOption.otherButtonBackgroundColor;                    
+                    totalHeight += btn.frame.size.height;
+                }
             }
         }
+    }
+    
+    //不使用分割线
+    if (!self.styleOption.btnStyle) {
+        totalHeight += AlertViewVerticalElementSpace;
     }
     
     self.alertView.frame = CGRectMake(self.alertView.frame.origin.x,
@@ -859,6 +834,7 @@ static const CGFloat AlertViewLineLayerWidth = 0.5;
 
 #pragma mark- PXAlertViewStack
 @implementation PXAlertViewStack
+@synthesize alertViews=_alertViews;
 
 + (instancetype)sharedInstance
 {
