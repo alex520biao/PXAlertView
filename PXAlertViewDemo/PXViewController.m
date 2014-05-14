@@ -40,8 +40,9 @@
 #pragma mark- PXAlertViewDemo
 - (IBAction)showSimpleAlertView:(id)sender{
     [PXAlertView showAlertWithTitle:@"PorridgeNew"
-                            message:@"How would you like it?"
                         contentView:nil
+                        secondTitle:nil
+                            message:@"How would you like it?"
                            btnStyle:NO
                       customization:nil
                          completion:^(BOOL cancelled, NSInteger buttonIndex) {
@@ -55,8 +56,9 @@
                         otherTitles:nil];
 
     [PXAlertView showAlertWithTitle:@"PorridgeNew"
-                            message:@"How would you like it?"
                         contentView:nil
+                        secondTitle:nil
+                            message:@"How would you like it?"
                            btnStyle:NO
                       customization:nil
                          completion:^(BOOL cancelled, NSInteger buttonIndex) {
@@ -69,8 +71,9 @@
                         otherTitles:@"Too Hot",nil];
     
     [PXAlertView showAlertWithTitle:@"PorridgeNew"
-                            message:@"How would you like it?"
                         contentView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ExampleImage.png"]]
+                        secondTitle:nil
+                            message:@"How would you like it?"
                            btnStyle:NO
                       customization:^PXAlertViewStyleOption *(PXAlertView *alertView, PXAlertViewStyleOption *styleOption) {
                           return styleOption;
@@ -87,8 +90,9 @@
 - (IBAction)showSimpleCustomizedAlertView:(id)sender{
     //customization自定义alertView样式
     PXAlertView *alertView=[PXAlertView showAlertWithTitle:@"I'm title"
+                            contentView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ExampleImage.png"]]
+                            secondTitle:nil
                             message:@"I'm message。alertView背景、各个按钮、contentView、title、message等均可自定义。"
-                        contentView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ExampleImage.png"]]
                            btnStyle:YES
                       customization:^PXAlertViewStyleOption *(PXAlertView *alertView,PXAlertViewStyleOption *styleOption) {
                           //返回的styleOption为默认样式
@@ -132,23 +136,50 @@
 
 - (IBAction)showLargeAlertView:(id)sender
 {
+//    UIImageView *contentView=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ExampleImage.png"]];
+////    contentView.frame=CGRectMake(0, 0, 300, 300);
+//    PXAlertView *alertView=[PXAlertView showAlertWithTitle:@"Why this is a larger title! Even larger than the largest large thing that ever was large in a very large way."
+//                                                   message:@"Oh my this looks like a nice message. Yes it does, and it can span multiple lines... all the way down."
+//                                               contentView:contentView
+//                                                  btnStyle:NO
+//                                             customization:^PXAlertViewStyleOption *(PXAlertView *alertView, PXAlertViewStyleOption *styleOption) {
+//                                                 return styleOption;
+//                                             } completion:^(BOOL cancelled, NSInteger buttonIndex) {
+//                                                 
+//                                             } cancelTitle:@"Ok thanks, that's grand"
+//                                               otherTitles:@"1234",nil];
+//    //黑色风格
+//    [alertView setAlertViewStyle:PXAlertViewStyleBlack btnStyle:YES];
+//
+//    //点击背景关闭
+//    [alertView setTapToDismissEnabled:YES];
+    
+    //嘀嘀打车样式
     UIImageView *contentView=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ExampleImage.png"]];
-//    contentView.frame=CGRectMake(0, 0, 300, 300);
-    PXAlertView *alertView=[PXAlertView showAlertWithTitle:@"Why this is a larger title! Even larger than the largest large thing that ever was large in a very large way."
-                                                   message:@"Oh my this looks like a nice message. Yes it does, and it can span multiple lines... all the way down."
+    PXAlertView *alertView=[PXAlertView showAlertWithTitle:@"提示信息"
                                                contentView:contentView
+                                               secondTitle:@"嘀嘀打车送你回家"
+                                                   message:@"当前不是WIFI网络,下载离线地图需呀18.2M流量,继续下载吗？"
                                                   btnStyle:NO
                                              customization:^PXAlertViewStyleOption *(PXAlertView *alertView, PXAlertViewStyleOption *styleOption) {
+                                                 styleOption.otherButtonBackgroundColor=[UIColor yellowColor];
+                                                 
+                                                 //只平铺图片中心点的内容
+                                                 UIImage *foucesImg=[UIImage imageNamed:@"ExampleImage"];//必须同时有单倍/双倍图片
+                                                 foucesImg = [foucesImg resizableImageWithCapInsets:UIEdgeInsetsMake((foucesImg.size.height)/2.0f,(foucesImg.size.width)/2.0f, (foucesImg.size.height)/2.0f, (foucesImg.size.width)/2.0f)];
+                                                 styleOption.otherButtonBackgroundImage=foucesImg;
+                                                 styleOption.otherButtonTitleColor=[UIColor whiteColor];
+                                                 
+                                                 styleOption.titleColor=[UIColor colorWithHexString:@"#333333"];
+                                                 styleOption.titleFont=[UIFont boldSystemFontOfSize:19];
+
+                                                 styleOption.messageColor=[UIColor colorWithHexString:@"#666666"];
+                                                 styleOption.messageFont=[UIFont systemFontOfSize:14];
                                                  return styleOption;
                                              } completion:^(BOOL cancelled, NSInteger buttonIndex) {
                                                  
-                                             } cancelTitle:@"Ok thanks, that's grand"
-                                               otherTitles:@"1234",nil];
-    //黑色风格
-    [alertView setAlertViewStyle:PXAlertViewStyleBlack btnStyle:YES];
-
-    //点击背景关闭
-    [alertView setTapToDismissEnabled:YES];
+                                             } cancelTitle:@"取消"
+                                               otherTitles:@"确定",nil];
 }
 
 
@@ -156,9 +187,9 @@
     
     PXAlertView *alertView = [PXAlertView showAlertWithTitle:@"No Animation"
                                                      message:@"When dismissed"
+                                                  completion:nil
                                                  cancelTitle:@"OK"
-                                                 otherTitles:nil
-                                                  completion:nil];
+                                                 otherTitles:nil];
     
     //dispatch计时器
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC));

@@ -29,6 +29,8 @@
 @synthesize btnStyle=_btnStyle;
 @synthesize otherButtonBackgroundHilightedColor=_otherButtonBackgroundHilightedColor;
 @synthesize cancelButtonBackgroundHilightedColor=_cancelButtonBackgroundHilightedColor;
+@synthesize otherButtonBackgroundImage=_otherButtonBackgroundImage;
+@synthesize otherButtonBackgroundHilightedImage=_otherButtonBackgroundHilightedImage;
 
 +(PXAlertViewStyleOption*)alertViewStyleOptionWithStyle:(PXAVStyle)alertViewStyle btnStyle:(BOOL)btnStyle{
     PXAlertViewStyleOption *styleOption=[[PXAlertViewStyleOption alloc] initWithAlertViewStyle:alertViewStyle btnStyle:btnStyle];

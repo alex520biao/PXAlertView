@@ -34,6 +34,7 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
 @property (nonatomic,strong) UIImageView *alertBgImageView;
 @property (nonatomic,strong) UILabel *titleLabel;
 @property (nonatomic,strong) UIView *contentView;
+@property (nonatomic,strong) UILabel *secondTitleLabel;
 @property (nonatomic,strong) UILabel *messageLabel;
 @property (nonatomic,strong) UIButton *cancelButton;
 @property (nonatomic,strong) UIButton *otherButton;
@@ -67,10 +68,11 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
 }
 
 - (id)initWithTitle:(NSString *)title
+        contentView:(UIView *)contentView
+        secondTitle:(NSString *)secondTitle
             message:(NSString *)message
         cancelTitle:(NSString *)cancelTitle
         otherTitles:(NSArray *)otherTitles
-        contentView:(UIView *)contentView
            btnStyle:(BOOL)btnStyle
      alertViewStyle:(PXAlertViewStyle)alertViewStyle
          completion:(PXAlertViewCompletionBlock)completion
@@ -140,6 +142,21 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
             _contentView.center = CGPointMake(floorf(AlertViewWidth/2), _contentView.center.y);
             messageLabelY += contentView.frame.size.height + AlertViewVerticalElementSpace;
         }
+        
+        _secondTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(AlertViewContentMargin,
+                                                                      messageLabelY,
+                                                                      AlertViewWidth - AlertViewContentMargin*2,
+                                                                      44)];
+        _secondTitleLabel.text = secondTitle;
+        _secondTitleLabel.backgroundColor = [UIColor clearColor];
+        _secondTitleLabel.textColor = [UIColor blackColor];
+        _secondTitleLabel.textAlignment = NSTextAlignmentCenter;
+        _secondTitleLabel.font = [UIFont boldSystemFontOfSize:17];
+        _secondTitleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        _secondTitleLabel.numberOfLines = 0;
+        _secondTitleLabel.frame = [self adjustLabelFrameHeight:_secondTitleLabel];
+        [_alertView addSubview:_secondTitleLabel];
+        messageLabelY += _secondTitleLabel.frame.size.height + AlertViewVerticalElementSpace;
         
         // Message
         _messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(AlertViewContentMargin,
@@ -375,13 +392,17 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
 }
 
 //按钮从点击态切回正常态的事件处理方法
-- (void)clearBackgroundColorForButton:(id)sender{
-    if (self.cancelButton) {
+- (void)clearBackgroundColorForButton:(UIButton*)sender{
+    if (self.cancelButton==sender) {
         [sender setBackgroundColor:self.styleOption.cancelButtonBackgroundColor];
         [sender setTitleColor:self.styleOption.cancelButtonTitleColor forState:UIControlStateNormal];
     }else{
-        [sender setBackgroundColor:self.styleOption.otherButtonBackgroundColor];
         [sender setTitleColor:self.styleOption.otherButtonTitleColor forState:UIControlStateNormal];
+        [sender setBackgroundColor:self.styleOption.otherButtonBackgroundColor];
+        if (self.styleOption.otherButtonBackgroundImage) {
+            [sender setBackgroundImage:self.styleOption.otherButtonBackgroundImage forState:UIControlStateNormal];
+            [sender setBackgroundColor:[UIColor clearColor]];
+        }
     }
 }
 
@@ -543,38 +564,65 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
 
 #pragma mark -
 #pragma mark Public
+/*
+ *  自定义样式的alertView
+ *
+ */
 + (instancetype)showAlertWithTitle:(NSString *)title
                            message:(NSString *)message
+                        completion:(PXAlertViewCompletionBlock)completion
                        cancelTitle:(NSString *)cancelTitle
-                       otherTitles:(NSArray *)otherTitles
-                        completion:(PXAlertViewCompletionBlock)completion{
-    
+                       otherTitles:(NSString *)otherTitles, ... NS_REQUIRES_NIL_TERMINATION{
+    //otherTitles参数列表
+    NSMutableArray *argsArray = [[NSMutableArray alloc] init];
+    va_list params; //定义一个指向个数可变的参数列表指针；
+    va_start(params,otherTitles);//va_start  得到第一个可变参数地址,
+    id arg;
+    if (otherTitles) {
+        //将第一个参数添加到array
+        id prev = otherTitles;
+        [argsArray addObject:prev];
+        
+        //va_arg 指向下一个参数地址
+        //这里是问题的所在 网上的例子，没有保存第一个参数地址，后边循环，指针将不会在指向第一个参数
+        while( (arg = va_arg(params,id)) ){
+            if ( arg ){
+                [argsArray addObject:arg];
+            }
+        }
+        //置空
+        va_end(params);
+    }
+
     PXAlertView *alertView = [[PXAlertView alloc] initWithTitle:title
-                                                 message:message
-                                             cancelTitle:cancelTitle
-                                             otherTitles:otherTitles
-                                             contentView:nil
-                                                btnStyle:NO
-                                          alertViewStyle:PXAlertViewStyleDefault
-                                              completion:completion
-                                             tapGestures:NO];
+                                                    contentView:nil
+                                                    secondTitle:nil
+                                                        message:message
+                                                    cancelTitle:cancelTitle
+                                                    otherTitles:argsArray
+                                                       btnStyle:NO
+                                                 alertViewStyle:PXAlertViewStyleDefault
+                                                     completion:completion
+                                                    tapGestures:NO];
     [alertView show];
     return alertView;
 }
 
 + (instancetype)showAlertWithTitle:(NSString *)title
+                       contentView:(UIView *)view
+                       secondTitle:(NSString *)secondTitle
                            message:(NSString *)message
                        cancelTitle:(NSString *)cancelTitle
                        otherTitles:(NSArray *)otherTitles
-                       contentView:(UIView *)view
                           btnStyle:(BOOL)btnStyle
                         completion:(PXAlertViewCompletionBlock)completion{
     
     PXAlertView *alertView = [[PXAlertView alloc] initWithTitle:title
+                                                    contentView:view
+                                                    secondTitle:secondTitle
                                                         message:message
                                                     cancelTitle:cancelTitle
                                                     otherTitles:otherTitles
-                                                    contentView:view
                                                        btnStyle:btnStyle
                                                  alertViewStyle:PXAlertViewStyleDefault
                                                      completion:completion
@@ -588,13 +636,14 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
  *
  */
 + (instancetype)showAlertWithTitle:(NSString *)title
-                 message:(NSString *)message
-             contentView:(UIView*)contentView
-                btnStyle:(BOOL)btnStyle
-           customization:(CustomizationBlock)customization
-              completion:(PXAlertViewCompletionBlock)completion
-             cancelTitle:(NSString *)cancelTitle
-             otherTitles:(NSString *)otherTitles, ... NS_REQUIRES_NIL_TERMINATION{
+                       contentView:(UIView*)contentView
+                       secondTitle:(NSString *)secondTitle
+                           message:(NSString *)message
+                          btnStyle:(BOOL)btnStyle
+                     customization:(CustomizationBlock)customization
+                        completion:(PXAlertViewCompletionBlock)completion
+                       cancelTitle:(NSString *)cancelTitle
+                       otherTitles:(NSString *)otherTitles, ... NS_REQUIRES_NIL_TERMINATION{
     //otherTitles参数列表
     NSMutableArray *argsArray = [[NSMutableArray alloc] init];
     va_list params; //定义一个指向个数可变的参数列表指针；
@@ -618,10 +667,11 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
     
     //创建默认样式alertView并显示
     PXAlertView *alertView = [[PXAlertView alloc] initWithTitle:title
+                                                    contentView:contentView
+                                                    secondTitle:secondTitle
                                                         message:message
                                                     cancelTitle:cancelTitle
                                                     otherTitles:argsArray
-                                                    contentView:contentView
                                                        btnStyle:btnStyle
                                                  alertViewStyle:PXAlertViewStyleDefault
                                                      completion:completion
@@ -683,6 +733,8 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
     
     self.titleLabel.textColor = self.styleOption.titleColor;
     self.titleLabel.font = self.styleOption.titleFont;
+    self.secondTitleLabel.textColor=self.styleOption.titleColor;
+    self.secondTitleLabel.font=self.styleOption.titleFont;
     self.messageLabel.textColor = self.styleOption.messageColor;
     self.messageLabel.font = self.styleOption.messageFont;
     
@@ -747,7 +799,7 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
     int totalHeight = 0;
     //titleLab、contentView、messagelab布局不包括UIButton
     for (UIView *view in [self.alertView subviews]) {
-        if (view==self.titleLabel||view==self.contentView||view==self.messageLabel) {
+        if (view==self.titleLabel||view==self.contentView||view==self.messageLabel||view==_secondTitleLabel) {
             totalHeight += view.frame.size.height + AlertViewVerticalElementSpace;            
         }
     }

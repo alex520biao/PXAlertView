@@ -42,23 +42,11 @@ typedef void(^PXAlertViewCompletionBlock)(BOOL cancelled, NSInteger buttonIndex)
 
 #pragma mark- 快捷方法
 /*
- * @param otherTitles Must be a NSArray containing type NSString, or set to nil for no otherTitles.
- */
-+ (instancetype)showAlertWithTitle:(NSString *)title
-                           message:(NSString *)message
-                       cancelTitle:(NSString *)cancelTitle
-                       otherTitles:(NSArray *)otherTitles
-                        completion:(PXAlertViewCompletionBlock)completion;
-
-/*
  *  自定义样式的alertView
  *
  */
 + (instancetype)showAlertWithTitle:(NSString *)title
                            message:(NSString *)message
-                       contentView:(UIView*)contentView
-                          btnStyle:(BOOL)btnStyle
-                     customization:(CustomizationBlock)customization
                         completion:(PXAlertViewCompletionBlock)completion
                        cancelTitle:(NSString *)cancelTitle
                        otherTitles:(NSString *)otherTitles, ... NS_REQUIRES_NIL_TERMINATION;
@@ -67,12 +55,29 @@ typedef void(^PXAlertViewCompletionBlock)(BOOL cancelled, NSInteger buttonIndex)
  * @param otherTitles Must be a NSArray containing type NSString, or set to nil for no otherTitles.
  */
 + (instancetype)showAlertWithTitle:(NSString *)title
+                       contentView:(UIView *)view
+                       secondTitle:(NSString *)secondTitle
                            message:(NSString *)message
                        cancelTitle:(NSString *)cancelTitle
                        otherTitles:(NSArray *)otherTitles
-                       contentView:(UIView *)view
                           btnStyle:(BOOL)btnStyle
                         completion:(PXAlertViewCompletionBlock)completion;
+
+/*
+ *  自定义样式的alertView
+ *
+ */
++ (instancetype)showAlertWithTitle:(NSString *)title
+                       contentView:(UIView*)contentView
+                       secondTitle:(NSString *)secondTitle
+                           message:(NSString *)message
+                          btnStyle:(BOOL)btnStyle
+                     customization:(CustomizationBlock)customization
+                        completion:(PXAlertViewCompletionBlock)completion
+                       cancelTitle:(NSString *)cancelTitle
+                       otherTitles:(NSString *)otherTitles, ... NS_REQUIRES_NIL_TERMINATION;
+
+
 
 //完全自定义alertView
 + (PXAlertView *)showAlertWithCustomAlertView:(UIView*)customAlertView;

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D94E900F19210333000DE056 /* UIColor-Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = D94E900E19210333000DE056 /* UIColor-Expanded.m */; };
 		D9A119631917BDE900F27077 /* PXAlertview特性.md in Resources */ = {isa = PBXBuildFile; fileRef = D9A119621917BDE900F27077 /* PXAlertview特性.md */; };
 		D9B39BBB18F3FDAB00E3C741 /* PXAlertViewStyleOption.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B39BBA18F3FDAB00E3C741 /* PXAlertViewStyleOption.m */; };
 		D9B39BBD18F52BDF00E3C741 /* s_5.png in Resources */ = {isa = PBXBuildFile; fileRef = D9B39BBC18F52BDF00E3C741 /* s_5.png */; };
@@ -40,6 +41,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D94E900D19210333000DE056 /* UIColor-Expanded.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor-Expanded.h"; sourceTree = "<group>"; };
+		D94E900E19210333000DE056 /* UIColor-Expanded.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor-Expanded.m"; sourceTree = "<group>"; };
 		D9A119621917BDE900F27077 /* PXAlertview特性.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "PXAlertview特性.md"; sourceTree = "<group>"; };
 		D9B39BB918F3FDAB00E3C741 /* PXAlertViewStyleOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PXAlertViewStyleOption.h; sourceTree = "<group>"; };
 		D9B39BBA18F3FDAB00E3C741 /* PXAlertViewStyleOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PXAlertViewStyleOption.m; sourceTree = "<group>"; };
@@ -131,6 +134,8 @@
 				FA11B69117F3867100236222 /* PXAppDelegate.m */,
 				FA11B69917F3867100236222 /* PXViewController.h */,
 				FA11B69A17F3867100236222 /* PXViewController.m */,
+				D94E900D19210333000DE056 /* UIColor-Expanded.h */,
+				D94E900E19210333000DE056 /* UIColor-Expanded.m */,
 				FA11B69317F3867100236222 /* Main_iPhone.storyboard */,
 				FA11B69617F3867100236222 /* Main_iPad.storyboard */,
 				FA11B69C17F3867100236222 /* Images.xcassets */,
@@ -286,6 +291,7 @@
 			files = (
 				FA11B69B17F3867100236222 /* PXViewController.m in Sources */,
 				FA11B69217F3867100236222 /* PXAppDelegate.m in Sources */,
+				D94E900F19210333000DE056 /* UIColor-Expanded.m in Sources */,
 				FA11B68E17F3867100236222 /* main.m in Sources */,
 				FA53E9561809B3BC001E6B60 /* PXAlertView.m in Sources */,
 				D9B39BBB18F3FDAB00E3C741 /* PXAlertViewStyleOption.m in Sources */,

@@ -28,6 +28,7 @@ typedef enum {
 @property (nonatomic, strong) UIColor *alertViewBgColor;
 @property (nonatomic, strong) UIImage *alertViewBgimage;
 
+//title和secondTite的颜色及字体
 @property (nonatomic, strong) UIColor *titleColor;
 @property (nonatomic, strong) UIFont *titleFont;
 
@@ -45,9 +46,12 @@ typedef enum {
 @property (nonatomic, strong) UIColor *otherButtonBackgroundColor;
 @property (nonatomic, strong) UIColor *otherButtonBackgroundHilightedColor;
 
+@property (nonatomic, strong) UIImage *otherButtonBackgroundImage;
+@property (nonatomic, strong) UIImage *otherButtonBackgroundHilightedImage;
+
 //分割线
 @property (nonatomic, assign,readonly) PXAVStyle alertViewStyle;//(只读)
-@property (nonatomic, assign,readonly) BOOL btnStyle;//按钮样式(只读)
+@property (nonatomic, assign,readonly) BOOL btnStyle;//按钮样式,默认btnStyle==NO
 @property (nonatomic, strong) UIColor *lineColor;//btnStyle==YES时有效
 
 +(PXAlertViewStyleOption*)alertViewStyleOptionWithStyle:(PXAVStyle)alertViewStyle btnStyle:(BOOL)btnStyle;
