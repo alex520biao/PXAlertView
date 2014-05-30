@@ -32,22 +32,31 @@ typedef enum {
 @property (nonatomic, strong) UIColor *titleColor;
 @property (nonatomic, strong) UIFont *titleFont;
 
+//message颜色及字体
 @property (nonatomic, strong) UIColor *messageColor;
 @property (nonatomic, strong) UIFont *messageFont;
 
-//按钮样式
+//取消按钮样式
 @property (nonatomic, strong) UIColor *cancelButtonTitleColor;
 @property (nonatomic, strong) UIColor *cancelButtonTitleHilightedColor;
 @property (nonatomic, strong) UIColor *cancelButtonBackgroundColor;
 @property (nonatomic, strong) UIColor *cancelButtonBackgroundHilightedColor;
 
+//普通按钮样式
 @property (nonatomic, strong) UIColor *otherButtonTitleColor;
 @property (nonatomic, strong) UIColor *otherButtonTitleHilightedColor;
 @property (nonatomic, strong) UIColor *otherButtonBackgroundColor;
 @property (nonatomic, strong) UIColor *otherButtonBackgroundHilightedColor;
-
 @property (nonatomic, strong) UIImage *otherButtonBackgroundImage;
 @property (nonatomic, strong) UIImage *otherButtonBackgroundHilightedImage;
+
+//特殊按钮样式
+@property (nonatomic, strong) UIColor *specialButtonTitleColor;
+@property (nonatomic, strong) UIColor *specialButtonTitleHilightedColor;
+@property (nonatomic, strong) UIColor *specialButtonBackgroundColor;
+@property (nonatomic, strong) UIColor *specialButtonBackgroundHilightedColor;
+@property (nonatomic, strong) UIImage *specialButtonBackgroundImage;
+@property (nonatomic, strong) UIImage *specialButtonBackgroundHilightedImage;
 
 //分割线
 @property (nonatomic, assign,readonly) PXAVStyle alertViewStyle;//(只读)

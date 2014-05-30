@@ -31,6 +31,12 @@
 @synthesize cancelButtonBackgroundHilightedColor=_cancelButtonBackgroundHilightedColor;
 @synthesize otherButtonBackgroundImage=_otherButtonBackgroundImage;
 @synthesize otherButtonBackgroundHilightedImage=_otherButtonBackgroundHilightedImage;
+@synthesize specialButtonBackgroundImage=_specialButtonBackgroundImage;
+@synthesize specialButtonBackgroundHilightedImage=_specialButtonBackgroundHilightedImage;
+@synthesize specialButtonTitleColor=_specialButtonTitleColor;
+@synthesize specialButtonBackgroundColor=_specialButtonBackgroundColor;
+@synthesize specialButtonBackgroundHilightedColor=_specialButtonBackgroundHilightedColor;
+
 
 +(PXAlertViewStyleOption*)alertViewStyleOptionWithStyle:(PXAVStyle)alertViewStyle btnStyle:(BOOL)btnStyle{
     PXAlertViewStyleOption *styleOption=[[PXAlertViewStyleOption alloc] initWithAlertViewStyle:alertViewStyle btnStyle:btnStyle];
@@ -84,6 +90,11 @@
         self.otherButtonTitleHilightedColor=[UIColor whiteColor];
         self.otherButtonBackgroundColor=[UIColor clearColor];
         self.otherButtonBackgroundHilightedColor=[UIColor blueColor];
+        
+        self.specialButtonTitleColor=[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1];
+        self.specialButtonTitleHilightedColor=[UIColor whiteColor];
+        self.specialButtonBackgroundColor=[UIColor clearColor];
+        self.specialButtonBackgroundHilightedColor=[UIColor blueColor];
     }else{
         self.lineColor = [UIColor clearColor];
         
@@ -96,6 +107,11 @@
         self.otherButtonTitleHilightedColor=[UIColor whiteColor];
         self.otherButtonBackgroundColor=[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.1];
         self.otherButtonBackgroundHilightedColor=[UIColor blueColor];
+        
+        self.specialButtonTitleColor=[UIColor colorWithRed:0.0 green:0.48 blue:1 alpha:1];
+        self.specialButtonTitleHilightedColor=[UIColor whiteColor];
+        self.specialButtonBackgroundColor=[UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.1];
+        self.specialButtonBackgroundHilightedColor=[UIColor blueColor];
     }
 }
 

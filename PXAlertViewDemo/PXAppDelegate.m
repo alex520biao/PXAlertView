@@ -43,4 +43,10 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+//针对不同的window设置不同的横竖屏支持
+- (NSUInteger)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window{
+    
+    return UIInterfaceOrientationMaskAll;
+}
+
 @end

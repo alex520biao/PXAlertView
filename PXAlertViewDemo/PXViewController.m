@@ -36,6 +36,11 @@
     return YES;
 }
 
+-(NSUInteger)supportedInterfaceOrientations {
+    
+    return UIInterfaceOrientationMaskAll;
+}
+
 
 #pragma mark- PXAlertViewDemo
 - (IBAction)showSimpleAlertView:(id)sender{
@@ -74,7 +79,7 @@
                         contentView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ExampleImage.png"]]
                         secondTitle:nil
                             message:@"How would you like it?"
-                           btnStyle:NO
+                           btnStyle:YES
                       customization:^PXAlertViewStyleOption *(PXAlertView *alertView, PXAlertViewStyleOption *styleOption) {
                           return styleOption;
                       } completion:^(BOOL cancelled, NSInteger buttonIndex) {
@@ -85,6 +90,15 @@
                           }
                       } cancelTitle:@"Cancel"
                         otherTitles:@"Too Hot", @"Luke Warm", @"Quite nippy",@"Other1",@"Other2",nil];
+    
+    
+    [TRAlertViewManager showAlertWithTitle:@"评价程序"
+                             alertViewIcon:TRAlertViewIconExclamMark
+                                   message:@"请给我们更多动力，让我们更加努力！噢噢噢噢噢~"
+                                completion:^(BOOL cancelled, NSInteger buttonIndex) {
+                                    
+                                } cancelTitle:@"取消"
+                               otherTitles:@"给我们好评",@"下次再评",@"无情的拒绝", nil];
 }
 
 - (IBAction)showSimpleCustomizedAlertView:(id)sender{

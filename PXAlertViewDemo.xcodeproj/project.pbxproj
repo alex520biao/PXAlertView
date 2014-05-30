@@ -11,6 +11,11 @@
 		D9A119631917BDE900F27077 /* PXAlertview特性.md in Resources */ = {isa = PBXBuildFile; fileRef = D9A119621917BDE900F27077 /* PXAlertview特性.md */; };
 		D9B39BBB18F3FDAB00E3C741 /* PXAlertViewStyleOption.m in Sources */ = {isa = PBXBuildFile; fileRef = D9B39BBA18F3FDAB00E3C741 /* PXAlertViewStyleOption.m */; };
 		D9B39BBD18F52BDF00E3C741 /* s_5.png in Resources */ = {isa = PBXBuildFile; fileRef = D9B39BBC18F52BDF00E3C741 /* s_5.png */; };
+		D9E767E51936E11C00CA6688 /* b@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D9E767E11936E11C00CA6688 /* b@2x.png */; };
+		D9E767E61936E11C00CA6688 /* b1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D9E767E21936E11C00CA6688 /* b1@2x.png */; };
+		D9E767E71936E11C00CA6688 /* b1_down@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D9E767E31936E11C00CA6688 /* b1_down@2x.png */; };
+		D9E767E81936E11C00CA6688 /* b_down@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D9E767E41936E11C00CA6688 /* b_down@2x.png */; };
+		D9E767EB1936E14600CA6688 /* TRAlertViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D9E767EA1936E14600CA6688 /* TRAlertViewManager.m */; };
 		FA11B68217F3867100236222 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA11B68117F3867100236222 /* Foundation.framework */; };
 		FA11B68417F3867100236222 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA11B68317F3867100236222 /* CoreGraphics.framework */; };
 		FA11B68617F3867100236222 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA11B68517F3867100236222 /* UIKit.framework */; };
@@ -47,6 +52,12 @@
 		D9B39BB918F3FDAB00E3C741 /* PXAlertViewStyleOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PXAlertViewStyleOption.h; sourceTree = "<group>"; };
 		D9B39BBA18F3FDAB00E3C741 /* PXAlertViewStyleOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PXAlertViewStyleOption.m; sourceTree = "<group>"; };
 		D9B39BBC18F52BDF00E3C741 /* s_5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = s_5.png; sourceTree = "<group>"; };
+		D9E767E11936E11C00CA6688 /* b@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "b@2x.png"; sourceTree = "<group>"; };
+		D9E767E21936E11C00CA6688 /* b1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "b1@2x.png"; sourceTree = "<group>"; };
+		D9E767E31936E11C00CA6688 /* b1_down@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "b1_down@2x.png"; sourceTree = "<group>"; };
+		D9E767E41936E11C00CA6688 /* b_down@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "b_down@2x.png"; sourceTree = "<group>"; };
+		D9E767E91936E14600CA6688 /* TRAlertViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TRAlertViewManager.h; sourceTree = "<group>"; };
+		D9E767EA1936E14600CA6688 /* TRAlertViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TRAlertViewManager.m; sourceTree = "<group>"; };
 		FA11B67E17F3867100236222 /* PXAlertViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PXAlertViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA11B68117F3867100236222 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FA11B68317F3867100236222 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -96,6 +107,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D9E767E01936E11C00CA6688 /* AlertView */ = {
+			isa = PBXGroup;
+			children = (
+				D9E767E11936E11C00CA6688 /* b@2x.png */,
+				D9E767E41936E11C00CA6688 /* b_down@2x.png */,
+				D9E767E21936E11C00CA6688 /* b1@2x.png */,
+				D9E767E31936E11C00CA6688 /* b1_down@2x.png */,
+			);
+			path = AlertView;
+			sourceTree = "<group>";
+		};
 		FA11B67517F3867100236222 = {
 			isa = PBXGroup;
 			children = (
@@ -150,6 +172,7 @@
 		FA11B68817F3867100236222 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				D9E767E01936E11C00CA6688 /* AlertView */,
 				FA11B68917F3867100236222 /* PXAlertViewDemo-Info.plist */,
 				FA11B68A17F3867100236222 /* InfoPlist.strings */,
 				FA11B68D17F3867100236222 /* main.m */,
@@ -183,6 +206,8 @@
 				D9B39BBA18F3FDAB00E3C741 /* PXAlertViewStyleOption.m */,
 				FA53E9541809B3BC001E6B60 /* PXAlertView.h */,
 				FA53E9551809B3BC001E6B60 /* PXAlertView.m */,
+				D9E767E91936E14600CA6688 /* TRAlertViewManager.h */,
+				D9E767EA1936E14600CA6688 /* TRAlertViewManager.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -264,8 +289,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D9E767E71936E11C00CA6688 /* b1_down@2x.png in Resources */,
 				FA11B69817F3867100236222 /* Main_iPad.storyboard in Resources */,
 				FA11B69D17F3867100236222 /* Images.xcassets in Resources */,
+				D9E767E81936E11C00CA6688 /* b_down@2x.png in Resources */,
+				D9E767E61936E11C00CA6688 /* b1@2x.png in Resources */,
+				D9E767E51936E11C00CA6688 /* b@2x.png in Resources */,
 				FADF87D717F99E950059B2B8 /* ExampleImage.png in Resources */,
 				D9B39BBD18F52BDF00E3C741 /* s_5.png in Resources */,
 				FA11B69517F3867100236222 /* Main_iPhone.storyboard in Resources */,
@@ -294,6 +323,7 @@
 				D94E900F19210333000DE056 /* UIColor-Expanded.m in Sources */,
 				FA11B68E17F3867100236222 /* main.m in Sources */,
 				FA53E9561809B3BC001E6B60 /* PXAlertView.m in Sources */,
+				D9E767EB1936E14600CA6688 /* TRAlertViewManager.m in Sources */,
 				D9B39BBB18F3FDAB00E3C741 /* PXAlertViewStyleOption.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -432,6 +462,7 @@
 				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer: rui wu (5JGGG6GKXF)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PXAlertViewDemo/PXAlertViewDemo-Prefix.pch";
 				INFOPLIST_FILE = "PXAlertViewDemo/PXAlertViewDemo-Info.plist";
@@ -448,6 +479,7 @@
 				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer: rui wu (5JGGG6GKXF)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "PXAlertViewDemo/PXAlertViewDemo-Prefix.pch";
 				INFOPLIST_FILE = "PXAlertViewDemo/PXAlertViewDemo-Info.plist";
