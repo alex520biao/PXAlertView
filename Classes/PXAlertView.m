@@ -86,19 +86,21 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
         _alertWindow = [self windowWithLevel:UIWindowLevelAlert];
         
         if (!_alertWindow) {
+            //UIWindow是直接显示在UIScreen上的，UIScreen坐标系左顶点为手机左顶点
             _alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
             _alertWindow.windowLevel = UIWindowLevelAlert;
             _alertWindow.backgroundColor = [UIColor clearColor];
         }
         _alertWindow.userInteractionEnabled = YES;
-        _alertWindow.rootViewController = self;
+//        _alertWindow.rootViewController = self;
         
+        self.view.frame = _alertWindow.bounds;
+        
+        //UIViewController上得view得子视图的frame
         CGRect frame = [self frameForOrientation:self.interfaceOrientation];
-        self.view.frame = frame;
-        
         _backgroundView = [[UIView alloc] initWithFrame:frame];
         _backgroundView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.25];
-        _backgroundView.alpha = 0;
+        _backgroundView.alpha = 1;//背景色无需动画
         [self.view addSubview:_backgroundView];
         
         _alertView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, AlertViewWidth, 150)];
@@ -352,7 +354,7 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
 
 - (CGPoint)centerWithFrame:(CGRect)frame
 {
-    return CGPointMake(CGRectGetMidX(frame), CGRectGetMidY(frame) - [self statusBarOffset]);
+    return CGPointMake(CGRectGetMidX(frame), CGRectGetMidY(frame));
 }
 
 - (CGFloat)statusBarOffset
@@ -455,7 +457,8 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
 
 - (void)showInternal
 {
-    [self.alertWindow addSubview:self.view];
+//    [self.alertWindow addSubview:self.view];
+    self.alertWindow.rootViewController=self;
     [self.alertWindow makeKeyAndVisible];
     self.alertWindow.userInteractionEnabled = YES;
     self.visible = YES;
@@ -476,15 +479,17 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
 
 - (void)hide
 {
-    [self.view removeFromSuperview];
+//    [self.view removeFromSuperview];
 }
 
 - (void)clearWindow
 {
     self.alertWindow.userInteractionEnabled = NO;
-    [self.alertWindow removeFromSuperview];
-    self.alertWindow = nil;
+//    [self.alertWindow removeFromSuperview];
+    
     [self.mainWindow makeKeyAndVisible];
+    self.alertWindow.rootViewController = nil;
+    self.alertWindow = nil;
 }
 
 - (void)dismiss:(id)sender
@@ -503,14 +508,14 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
         [self.mainWindow tintColorDidChange];
     }
     [UIView animateWithDuration:(animated ? 0.2 : 0) animations:^{
-        self.backgroundView.alpha = 0;
+//        self.backgroundView.alpha = 0;
         self.alertView.alpha = 0;
     } completion:^(BOOL finished) {
         [[PXAlertViewStack sharedInstance] pop:self];
         if ([PXAlertViewStack sharedInstance].alertViews.count<=0) {
             [self clearWindow];
         }
-        [self.view removeFromSuperview];
+//        [self.view removeFromSuperview];
         
         if (self.completion) {
             BOOL cancelled = NO;
@@ -599,9 +604,38 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
-    CGRect frame = [self frameForOrientation:interfaceOrientation];
+     _alertWindow.frame=[[UIScreen mainScreen] bounds];
+     self.view.frame=_alertWindow.bounds;
+     self.backgroundView.frame = self.view.bounds;
+     
+     CGRect frame = [self frameForOrientation:interfaceOrientation];
+     CGPoint center=[self centerWithFrame:frame];
+     self.alertView.center = center;
+}
+
+//- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation{
+////    CGRect appFrame=[[UIScreen mainScreen] applicationFrame];//程序的frame
+//    _alertWindow.frame=[[UIScreen mainScreen] bounds];
+//    self.view.frame=_alertWindow.bounds;
+//    self.backgroundView.frame = self.view.bounds;
+//    
+//    CGRect frame = [self frameForOrientation:self.interfaceOrientation];
+//    CGPoint center=[self centerWithFrame:frame];
+//    self.alertView.center = center;
+//}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
+    
+     //    CGRect appFrame=[[UIScreen mainScreen] applicationFrame];//程序的frame
+     _alertWindow.frame=[[UIScreen mainScreen] bounds];
+    
+     CGRect frame = [self frameForOrientation:self.interfaceOrientation];
+    self.view.frame=frame;
     self.backgroundView.frame = frame;
-    self.alertView.center = [self centerWithFrame:frame];
+     CGPoint center=[self centerWithFrame:frame];
+     self.alertView.center = center;
 }
 
 #pragma mark -
@@ -852,7 +886,10 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
 #pragma mark- layoutView
 //self.view子视图布局: self.view上add及remove子视图，以及子视图的frame变化，均会引起layoutSubviews_selfView方法调用
 -(void)layoutSubviews_selfView{
-    _alertView.center = [self centerWithFrame:self.view.frame];
+
+    CGRect frame = [self frameForOrientation:self.interfaceOrientation];
+    CGPoint center=[self centerWithFrame:frame];
+    _alertView.center = center;
     self.alertBgImageView.frame = _alertView.bounds;
 }
 
