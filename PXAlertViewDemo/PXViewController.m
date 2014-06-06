@@ -99,6 +99,13 @@
                                     
                                 } cancelTitle:@"取消"
                                otherTitles:@"给我们好评",@"下次再评",@"无情的拒绝", nil];
+    
+    [TRAlertViewManager showAlertWithTitle:@"评价程序"
+                                   message:@"请给我们更多动力，让我们更加努力！噢噢噢噢噢~"
+                                completion:^(BOOL cancelled, NSInteger buttonIndex) {
+                                    
+                                } cancelTitle:@"取消"
+                               otherTitles:@"给我们好评",@"下次再评",@"无情的拒绝", nil];
 }
 
 - (IBAction)showSimpleCustomizedAlertView:(id)sender{

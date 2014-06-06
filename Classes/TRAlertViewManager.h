@@ -19,6 +19,15 @@ typedef enum {
     TRAlertViewIconMaike                     //麦克
 }TRAlertViewIcon;
 
+/*
+ *  无icon的alertView
+ *
+ */
++ (void)showAlertWithTitle:(NSString *)title
+                   message:(NSString *)message
+                completion:(PXAlertViewCompletionBlock)completion
+               cancelTitle:(NSString *)cancelTitle
+               otherTitles:(NSString *)otherTitles, ... NS_REQUIRES_NIL_TERMINATION;
 
 /*
  *  自定义样式的alertView
@@ -30,6 +39,5 @@ typedef enum {
                 completion:(PXAlertViewCompletionBlock)completion
                cancelTitle:(NSString *)cancelTitle
                otherTitles:(NSString *)otherTitles, ... NS_REQUIRES_NIL_TERMINATION;
-
 
 @end
