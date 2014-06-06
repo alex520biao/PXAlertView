@@ -24,18 +24,23 @@
 @synthesize messageColor;
 @synthesize messageFont;
 @synthesize cancelButtonBackgroundColor;
-@synthesize otherButtonBackgroundColor;
 @synthesize lineColor=_lineColor;
 @synthesize btnStyle=_btnStyle;
-@synthesize otherButtonBackgroundHilightedColor=_otherButtonBackgroundHilightedColor;
+
 @synthesize cancelButtonBackgroundHilightedColor=_cancelButtonBackgroundHilightedColor;
+@synthesize cancelButtonBackgroundImage=_cancelButtonBackgroundImage;
+@synthesize cancelButtonBackgroundHilightedImage=_cancelButtonBackgroundHilightedImage;
+
+@synthesize otherButtonBackgroundColor=_otherButtonBackgroundColor;
 @synthesize otherButtonBackgroundImage=_otherButtonBackgroundImage;
 @synthesize otherButtonBackgroundHilightedImage=_otherButtonBackgroundHilightedImage;
-@synthesize specialButtonBackgroundImage=_specialButtonBackgroundImage;
-@synthesize specialButtonBackgroundHilightedImage=_specialButtonBackgroundHilightedImage;
+@synthesize otherButtonBackgroundHilightedColor=_otherButtonBackgroundHilightedColor;
+
 @synthesize specialButtonTitleColor=_specialButtonTitleColor;
 @synthesize specialButtonBackgroundColor=_specialButtonBackgroundColor;
 @synthesize specialButtonBackgroundHilightedColor=_specialButtonBackgroundHilightedColor;
+@synthesize specialButtonBackgroundImage=_specialButtonBackgroundImage;
+@synthesize specialButtonBackgroundHilightedImage=_specialButtonBackgroundHilightedImage;
 
 
 +(PXAlertViewStyleOption*)alertViewStyleOptionWithStyle:(PXAVStyle)alertViewStyle btnStyle:(BOOL)btnStyle{
@@ -115,7 +120,7 @@
     }
 }
 
-//黑色风格
+//黑色风格(参考默认样式更新)
 -(void)alertViewStyleOptionBlack{
     //初始默认设置
     [self alertViewStyleOptionDefault];

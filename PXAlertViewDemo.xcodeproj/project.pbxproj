@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D93DE3051941D1D2000B4F07 /* UIImage+resizableImage.m in Sources */ = {isa = PBXBuildFile; fileRef = D93DE3041941D1D2000B4F07 /* UIImage+resizableImage.m */; };
 		D94E900F19210333000DE056 /* UIColor-Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = D94E900E19210333000DE056 /* UIColor-Expanded.m */; };
 		D9A119631917BDE900F27077 /* PXAlertview特性.md in Resources */ = {isa = PBXBuildFile; fileRef = D9A119621917BDE900F27077 /* PXAlertview特性.md */; };
 		D9A9439B19389666001F6EEB /* Reveal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9A9439A19389666001F6EEB /* Reveal.framework */; };
@@ -54,6 +55,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D93DE3031941D1D2000B4F07 /* UIImage+resizableImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+resizableImage.h"; sourceTree = "<group>"; };
+		D93DE3041941D1D2000B4F07 /* UIImage+resizableImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+resizableImage.m"; sourceTree = "<group>"; };
 		D94E900D19210333000DE056 /* UIColor-Expanded.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor-Expanded.h"; sourceTree = "<group>"; };
 		D94E900E19210333000DE056 /* UIColor-Expanded.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor-Expanded.m"; sourceTree = "<group>"; };
 		D9A119621917BDE900F27077 /* PXAlertview特性.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "PXAlertview特性.md"; sourceTree = "<group>"; };
@@ -243,6 +246,8 @@
 				FA53E9551809B3BC001E6B60 /* PXAlertView.m */,
 				D9E767E91936E14600CA6688 /* TRAlertViewManager.h */,
 				D9E767EA1936E14600CA6688 /* TRAlertViewManager.m */,
+				D93DE3031941D1D2000B4F07 /* UIImage+resizableImage.h */,
+				D93DE3041941D1D2000B4F07 /* UIImage+resizableImage.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -363,6 +368,7 @@
 				D94E900F19210333000DE056 /* UIColor-Expanded.m in Sources */,
 				FA11B68E17F3867100236222 /* main.m in Sources */,
 				FA53E9561809B3BC001E6B60 /* PXAlertView.m in Sources */,
+				D93DE3051941D1D2000B4F07 /* UIImage+resizableImage.m in Sources */,
 				D9E767EB1936E14600CA6688 /* TRAlertViewManager.m in Sources */,
 				D9B39BBB18F3FDAB00E3C741 /* PXAlertViewStyleOption.m in Sources */,
 			);

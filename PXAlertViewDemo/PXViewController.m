@@ -91,21 +91,33 @@
                       } cancelTitle:@"Cancel"
                         otherTitles:@"Too Hot", @"Luke Warm", @"Quite nippy",@"Other1",@"Other2",nil];
     
-    
     [TRAlertViewManager showAlertWithTitle:@"评价程序"
                              alertViewIcon:TRAlertViewIconRedStar
                                    message:@"请给我们更多动力，让我们更加努力！噢噢噢噢噢~"
                                 completion:^(BOOL cancelled, NSInteger buttonIndex) {
                                     
-                                } cancelTitle:@"取消"
-                               otherTitles:@"给我们好评",@"下次再评",@"无情的拒绝", nil];
+                                }
+                               cancelTitle:@"取消"
+                             specialButton:^BOOL(NSInteger buttonIndex) {
+                                 if (buttonIndex==0||buttonIndex==2) {
+                                     return YES;
+                                 }
+                                 return NO;
+                             } otherTitles:@"给我们好评",@"下次再评",@"无情的拒绝", nil];
     
-    [TRAlertViewManager showAlertWithTitle:@"评价程序"
-                                   message:@"请给我们更多动力，让我们更加努力！噢噢噢噢噢~"
+    [TRAlertViewManager showAlertWithTitle:@"发送红包"
+                             alertViewIcon:TRAlertViewIconExclamMark
+                                   message:@"XXXXXXXXXXXXXX噢噢噢噢噢~"
                                 completion:^(BOOL cancelled, NSInteger buttonIndex) {
                                     
-                                } cancelTitle:@"取消"
-                               otherTitles:@"给我们好评",@"下次再评",@"无情的拒绝", nil];
+                                }
+                               cancelTitle:@"确定"
+                             specialButton:^BOOL(NSInteger buttonIndex) {
+                                 if (buttonIndex==1) {
+                                     return YES;
+                                 }
+                                 return NO;
+                             } otherTitles:@"Other1",@"Other2", nil];
 }
 
 - (IBAction)showSimpleCustomizedAlertView:(id)sender{

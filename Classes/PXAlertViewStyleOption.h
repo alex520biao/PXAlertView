@@ -41,6 +41,8 @@ typedef enum {
 @property (nonatomic, strong) UIColor *cancelButtonTitleHilightedColor;
 @property (nonatomic, strong) UIColor *cancelButtonBackgroundColor;
 @property (nonatomic, strong) UIColor *cancelButtonBackgroundHilightedColor;
+@property (nonatomic, strong) UIImage *cancelButtonBackgroundImage;
+@property (nonatomic, strong) UIImage *cancelButtonBackgroundHilightedImage;
 
 //普通按钮样式
 @property (nonatomic, strong) UIColor *otherButtonTitleColor;

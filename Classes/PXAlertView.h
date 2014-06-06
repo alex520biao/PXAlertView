@@ -12,6 +12,7 @@
 @class PXAlertViewStyleOption;
 typedef PXAlertViewStyleOption *(^CustomizationBlock)(PXAlertView *alertView,PXAlertViewStyleOption *styleOption);
 typedef void(^PXAlertViewCompletionBlock)(BOOL cancelled, NSInteger buttonIndex);
+typedef BOOL(^SpecialButtonBlock)(NSInteger buttonIndex);
 
 @interface PXAlertView : UIViewController
 
@@ -88,6 +89,7 @@ typedef void(^PXAlertViewCompletionBlock)(BOOL cancelled, NSInteger buttonIndex)
                           btnStyle:(BOOL)btnStyle
                        cancelTitle:(NSString *)cancelTitle
                        otherTitles:(NSArray *)otherTitles
+                     specialButton:(SpecialButtonBlock)specialButton
                      customization:(CustomizationBlock)customization
                         completion:(PXAlertViewCompletionBlock)completion;
 

@@ -44,6 +44,8 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
 @property (nonatomic,strong) UITapGestureRecognizer *tap;
 @property (nonatomic, copy) void (^completion)(BOOL cancelled, NSInteger buttonIndex);
 
+@property (nonatomic, copy)SpecialButtonBlock specialButtonBlock;
+
 //存放所有分割线(横向、纵向)
 @property (nonatomic,strong)NSMutableArray *lineLayerArray;
 
@@ -75,11 +77,15 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
         otherTitles:(NSArray *)otherTitles
            btnStyle:(BOOL)btnStyle
      alertViewStyle:(PXAlertViewStyle)alertViewStyle
-         completion:(PXAlertViewCompletionBlock)completion
         tapGestures:(BOOL)isTapEnable
+      specialButton:(SpecialButtonBlock)specialButton
+         completion:(PXAlertViewCompletionBlock)completion
 {
     self = [super init];
     if (self) {
+        //specialButtonBlock用于定制按钮是否为special按钮
+        self.specialButtonBlock=specialButton;
+
         _lineLayerArray=[NSMutableArray array];
         
         _mainWindow = [self windowWithLevel:UIWindowLevelNormal];
@@ -260,7 +266,7 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
         [self.alertView addSubview:button0];
         if (cancelTitle) {
             self.cancelButton=button0;
-            self.cancelButton.titleLabel.font = [UIFont systemFontOfSize:kBtnFontSize];
+            self.cancelButton.titleLabel.font = [UIFont boldSystemFontOfSize:kBtnFontSize];
         }
         self.buttons = (self.buttons) ? [self.buttons arrayByAddingObject:button0] : @[ button0 ];
         
@@ -289,7 +295,7 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
             [self.alertView addSubview:button];
             if (cancelTitle&&i==0) {
                 self.cancelButton=button;
-                self.cancelButton.titleLabel.font = [UIFont systemFontOfSize:kBtnFontSize];
+                self.cancelButton.titleLabel.font = [UIFont boldSystemFontOfSize:kBtnFontSize];
             }
             self.buttons = (self.buttons) ? [self.buttons arrayByAddingObject:button] : @[ button ];
         }
@@ -385,9 +391,11 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
 
 //按钮进入点击态的事件处理方法
 - (void)setBackgroundColorForButton:(UIButton*)sender{
-    if (self.cancelButton==sender) {
-        [sender setTitleColor:self.styleOption.specialButtonTitleHilightedColor forState:UIControlStateNormal];
+    int index=[self.buttons indexOfObject:sender];
+    BOOL specialButton=self.specialButtonBlock?self.specialButtonBlock(index):NO;
 
+    if (specialButton) {
+        [sender setTitleColor:self.styleOption.specialButtonTitleHilightedColor forState:UIControlStateNormal];
         if (self.styleOption.specialButtonBackgroundHilightedImage) {
             [sender setBackgroundColor:[UIColor clearColor]];
             [sender setBackgroundImage:self.styleOption.specialButtonBackgroundHilightedImage forState:UIControlStateNormal];
@@ -395,19 +403,34 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
             [sender setBackgroundColor:self.styleOption.specialButtonBackgroundHilightedColor];
         }
     }else{
-        [sender setTitleColor:self.styleOption.otherButtonTitleHilightedColor forState:UIControlStateNormal];
-        if (self.styleOption.otherButtonBackgroundHilightedImage) {
-            [sender setBackgroundColor:[UIColor clearColor]];
-            [sender setBackgroundImage:self.styleOption.otherButtonBackgroundHilightedImage forState:UIControlStateNormal];
+        if (self.cancelButton==sender) {
+            [sender setTitleColor:self.styleOption.cancelButtonTitleHilightedColor forState:UIControlStateNormal];
+            
+            if (self.styleOption.cancelButtonBackgroundHilightedImage) {
+                [sender setBackgroundColor:[UIColor clearColor]];
+                [sender setBackgroundImage:self.styleOption.cancelButtonBackgroundHilightedImage forState:UIControlStateNormal];
+            }else{
+                [sender setBackgroundColor:self.styleOption.cancelButtonBackgroundHilightedColor];
+            }
         }else{
-            [sender setBackgroundColor:self.styleOption.otherButtonBackgroundHilightedColor];
+            [sender setTitleColor:self.styleOption.otherButtonTitleHilightedColor forState:UIControlStateNormal];
+            if (self.styleOption.otherButtonBackgroundHilightedImage) {
+                [sender setBackgroundColor:[UIColor clearColor]];
+                [sender setBackgroundImage:self.styleOption.otherButtonBackgroundHilightedImage forState:UIControlStateNormal];
+            }else{
+                [sender setBackgroundColor:self.styleOption.otherButtonBackgroundHilightedColor];
+            }
         }
     }
+
 }
 
 //按钮从点击态切回正常态的事件处理方法
 - (void)clearBackgroundColorForButton:(UIButton*)sender{
-    if (self.cancelButton==sender) {
+    int index=[self.buttons indexOfObject:sender];
+    BOOL specialButton=self.specialButtonBlock?self.specialButtonBlock(index):NO;
+
+    if (specialButton) {
         [sender setTitleColor:self.styleOption.specialButtonTitleColor forState:UIControlStateNormal];
         
         //使用分割线
@@ -428,23 +451,45 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
             }
         }
     }else{
-        [sender setTitleColor:self.styleOption.otherButtonTitleColor forState:UIControlStateNormal];
-        
-        //使用分割线
-        if (self.styleOption.btnStyle) {
-            sender.layer.cornerRadius=0;//清除圆角
-            [sender setBackgroundColor:self.styleOption.otherButtonBackgroundColor];
-            [sender setBackgroundImage:nil forState:UIControlStateNormal];
-        }else{
-            //优先使用背景图片
-            if (self.styleOption.otherButtonBackgroundImage) {
-                [sender setBackgroundColor:[UIColor clearColor]];
-                [sender setBackgroundImage:self.styleOption.otherButtonBackgroundImage forState:UIControlStateNormal];
+        if (self.cancelButton==sender) {
+            [sender setTitleColor:self.styleOption.cancelButtonTitleColor forState:UIControlStateNormal];
+            
+            //使用分割线
+            if (self.styleOption.btnStyle) {
                 sender.layer.cornerRadius=0;//清除圆角
+                [sender setBackgroundColor:self.styleOption.specialButtonBackgroundColor];
+                [sender setBackgroundImage:nil forState:UIControlStateNormal];
             }else{
+                //优先使用背景图片
+                if (self.styleOption.cancelButtonBackgroundImage) {
+                    [sender setBackgroundColor:[UIColor clearColor]];
+                    [sender setBackgroundImage:self.styleOption.cancelButtonBackgroundImage forState:UIControlStateNormal];
+                    sender.layer.cornerRadius=0;//清除圆角
+                }else{
+                    [sender setBackgroundColor:self.styleOption.cancelButtonBackgroundColor];
+                    [sender setBackgroundImage:nil forState:UIControlStateNormal];
+                    sender.layer.cornerRadius=5;//设置圆角
+                }
+            }
+        }else{
+            [sender setTitleColor:self.styleOption.otherButtonTitleColor forState:UIControlStateNormal];
+            
+            //使用分割线
+            if (self.styleOption.btnStyle) {
+                sender.layer.cornerRadius=0;//清除圆角
                 [sender setBackgroundColor:self.styleOption.otherButtonBackgroundColor];
                 [sender setBackgroundImage:nil forState:UIControlStateNormal];
-                sender.layer.cornerRadius=5;//设置圆角
+            }else{
+                //优先使用背景图片
+                if (self.styleOption.otherButtonBackgroundImage) {
+                    [sender setBackgroundColor:[UIColor clearColor]];
+                    [sender setBackgroundImage:self.styleOption.otherButtonBackgroundImage forState:UIControlStateNormal];
+                    sender.layer.cornerRadius=0;//清除圆角
+                }else{
+                    [sender setBackgroundColor:self.styleOption.otherButtonBackgroundColor];
+                    [sender setBackgroundImage:nil forState:UIControlStateNormal];
+                    sender.layer.cornerRadius=5;//设置圆角
+                }
             }
         }
     }
@@ -678,8 +723,9 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
                                                     otherTitles:argsArray
                                                        btnStyle:NO
                                                  alertViewStyle:PXAlertViewStyleDefault
-                                                     completion:completion
-                                                    tapGestures:NO];
+                                                    tapGestures:NO
+                                                  specialButton:nil
+                                                     completion:completion];
     [alertView show];
     return alertView;
 }
@@ -701,8 +747,10 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
                                                     otherTitles:otherTitles
                                                        btnStyle:btnStyle
                                                  alertViewStyle:PXAlertViewStyleDefault
-                                                     completion:completion
-                                                    tapGestures:NO];
+                                                    tapGestures:NO
+                                                  specialButton:nil
+                                                     completion:completion];
+
     [alertView show];
     return alertView;
 }
@@ -748,6 +796,7 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
                            btnStyle:btnStyle
                         cancelTitle:cancelTitle
                         otherTitles:argsArray
+                      specialButton:nil
                       customization:customization
                          completion:completion];
 }
@@ -763,6 +812,7 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
                           btnStyle:(BOOL)btnStyle
                        cancelTitle:(NSString *)cancelTitle
                        otherTitles:(NSArray *)otherTitles
+                     specialButton:(SpecialButtonBlock)specialButton
                      customization:(CustomizationBlock)customization
                         completion:(PXAlertViewCompletionBlock)completion{
 
@@ -775,8 +825,9 @@ static const CGFloat AlertViewLineLayerWidth = 1;//非高清屏幕不支持0.5px
                                                     otherTitles:otherTitles
                                                        btnStyle:btnStyle
                                                  alertViewStyle:PXAlertViewStyleDefault
-                                                     completion:completion
-                                                    tapGestures:NO];
+                                                    tapGestures:NO
+                                                  specialButton:specialButton
+                                                     completion:completion];
     
     [alertView show];
 
