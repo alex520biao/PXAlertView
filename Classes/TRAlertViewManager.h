@@ -14,9 +14,9 @@ typedef enum {
     TRAlertViewIconNone=0,                   //无icon
     TRAlertViewIconExclamMark,               //感叹号提示
     TRAlertViewIconRedStar,                  //红心
-    TRAlertViewIconAddr,                     //定位图标
+    TRAlertViewIconAddr,                     //地址
     TRAlertViewIconFace,                     //笑脸
-    TRAlertViewIconHongbao                   //红包
+    TRAlertViewIconMaike                     //麦克
 }TRAlertViewIcon;
 
 

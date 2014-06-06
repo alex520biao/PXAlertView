@@ -40,13 +40,6 @@
         //置空
         va_end(params);
     }
-//    
-//    TRAlertViewIconNone=0,                   //无icon
-//    TRAlertViewIconExclamMark,               //感叹号提示
-//    TRAlertViewIconRedStar,                  //红心
-//    TRAlertViewIconAddr,                     //定位图标
-//    TRAlertViewIconFace,                     //笑脸
-//    TRAlertViewIconHongbao                   //红包
 
     UIImageView *contentView=[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 55, 55)];
     switch (alertViewIcon) {
@@ -54,25 +47,24 @@
             contentView=nil;
         }break;
         case TRAlertViewIconExclamMark:{
-            contentView.image=[UIImage imageNamed:@"ExampleImage.png"];
+            contentView.image=[UIImage imageNamed:@"dialog_icon_exclamation_mark"];
         }break;
         case TRAlertViewIconRedStar:{
-            contentView.image=[UIImage imageNamed:@"ExampleImage.png"];
+            contentView.image=[UIImage imageNamed:@"dialog_icon_heart"];
         }break;
         case TRAlertViewIconAddr:{
-            contentView.image=[UIImage imageNamed:@"ExampleImage.png"];
+            contentView.image=[UIImage imageNamed:@"dialog_icon_address"];
         }break;
         case TRAlertViewIconFace:{
             contentView.image=[UIImage imageNamed:@"ExampleImage.png"];
         }break;
-        case TRAlertViewIconHongbao:{
-            contentView.image=[UIImage imageNamed:@"ExampleImage.png"];
+        case TRAlertViewIconMaike:{
+            contentView.image=[UIImage imageNamed:@"dialog_icon_micro_error"];
         }break;
         default:{
             contentView.image=nil;
         }break;
     }
-    
     
     PXAlertView *alertView=[PXAlertView showAlertWithTitle:nil
                                                contentView:contentView
@@ -83,14 +75,14 @@
                                                otherTitles:argsArray
                                              customization:^PXAlertViewStyleOption *(PXAlertView *alertView, PXAlertViewStyleOption *styleOption) {
 
-                                                 UIImage *foucesImg=[UIImage imageNamed:@"b1"];//图片命名不规范会有问题(单倍图:img.png/双倍图:img@2x.png)
+                                                 UIImage *foucesImg=[UIImage imageNamed:@"dialog_b1"];//图片命名不规范会有问题(单倍图:img.png/双倍图:img@2x.png)
                                                  foucesImg = [foucesImg resizableImageWithCapInsets:UIEdgeInsetsMake(floor(foucesImg.size.height/2),
                                                                                                                      floor(foucesImg.size.width/2),
                                                                                                                      floor(foucesImg.size.height/2),
                                                                                                                      floor(foucesImg.size.width/2))];
                                                  styleOption.otherButtonBackgroundImage=foucesImg;
                                                  
-                                                 UIImage *foucesImg1=[UIImage imageNamed:@"b1_down"];
+                                                 UIImage *foucesImg1=[UIImage imageNamed:@"dialog_b1_down"];
                                                  foucesImg1 = [foucesImg1 resizableImageWithCapInsets:UIEdgeInsetsMake(floor(foucesImg1.size.height/2),
                                                                                                                      floor(foucesImg1.size.width/2),
                                                                                                                      floor(foucesImg1.size.height/2),
@@ -101,14 +93,14 @@
                                                  styleOption.otherButtonTitleHilightedColor=[UIColor whiteColor];
                                                  
                                                  
-                                                 UIImage *spcImg=[UIImage imageNamed:@"b"];//图片命名不规范会有问题(单倍图:img.png/双倍图:img@2x.png)
+                                                 UIImage *spcImg=[UIImage imageNamed:@"dialog_b"];//图片命名不规范会有问题(单倍图:img.png/双倍图:img@2x.png)
                                                  spcImg = [spcImg resizableImageWithCapInsets:UIEdgeInsetsMake(floor(spcImg.size.height/2),
                                                                                                                      floor(spcImg.size.width/2),
                                                                                                                      floor(spcImg.size.height/2),
                                                                                                                      floor(spcImg.size.width/2))];
                                                  styleOption.specialButtonBackgroundImage=spcImg;
                                                  
-                                                 UIImage *spcImg1=[UIImage imageNamed:@"b_down"];
+                                                 UIImage *spcImg1=[UIImage imageNamed:@"dialog_b_down"];
                                                  spcImg1 = [spcImg1 resizableImageWithCapInsets:UIEdgeInsetsMake(floor(spcImg1.size.height/2),
                                                                                                                        floor(spcImg1.size.width/2),
                                                                                                                        floor(spcImg1.size.height/2),

@@ -93,7 +93,7 @@
     
     
     [TRAlertViewManager showAlertWithTitle:@"评价程序"
-                             alertViewIcon:TRAlertViewIconExclamMark
+                             alertViewIcon:TRAlertViewIconRedStar
                                    message:@"请给我们更多动力，让我们更加努力！噢噢噢噢噢~"
                                 completion:^(BOOL cancelled, NSInteger buttonIndex) {
                                     
