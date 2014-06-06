@@ -99,7 +99,7 @@
                                 }
                                cancelTitle:@"取消"
                              specialButton:^BOOL(NSInteger buttonIndex) {
-                                 if (buttonIndex==0||buttonIndex==2) {
+                                 if (buttonIndex==1||buttonIndex==2) {
                                      return YES;
                                  }
                                  return NO;
